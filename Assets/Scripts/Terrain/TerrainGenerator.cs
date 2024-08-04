@@ -3,17 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    [SerializeField] private Terrain grassTerrain;
-    [SerializeField] private Terrain mudTerrain;
-    [SerializeField] private Terrain roadTerrain;
+    public const float TERRAIN_WIDTH = 4;
+    private const string PATH_PREFABS_TERRAINS = "Prefabs/Terrain";
+    
+    public static TerrainGenerator instance;
+
     [SerializeField] private int roadLenght = 5;
 
-    private Queue<Terrain> activeTerrains = new Queue<Terrain>();
-    private Vector3 nextPosition;
+    private List<Terrain>[] readyTerrains;
+    private List<Terrain> activeTerrains = new List<Terrain>();
 
+    private Terrain OldestTerrain => activeTerrains[0];
+    private Terrain NewestTerrain => activeTerrains[activeTerrains.Count - 1];
+    private Vector3 NextPosition => activeTerrains.Count > 0 ? NewestTerrain.transform.position + Vector3.right * TERRAIN_WIDTH : Vector3.zero /*new Vector3(-((roadLenght - 1) * TERRAIN_WIDTH / 2), 0, 0)*/;
+
+
+    private void Awake()
+    {
+        if (instance)
+            Destroy(this);
+        else
+            instance = this;
+    }
     private void Start()
     {
         Initialize();
@@ -21,42 +36,89 @@ public class TerrainGenerator : MonoBehaviour
 
     private void Initialize()
     {
-        for(int i = 0; i < roadLenght; i++)
-            AddRandomTerrain();
+        LoadTerrains();
+        PlaceFirstTerrains();
     }
     public void Reset()
     {
-        nextPosition = Vector3.zero;
         for (int i = 0; i < activeTerrains.Count; i++)
-            Destroy(activeTerrains.Dequeue().gameObject);
-        Initialize();
+            Destroy(activeTerrains[i].gameObject);
+        activeTerrains.Clear();
+        PlaceFirstTerrains();
     }
 
-    public void AddRandomTerrain()
+    private void LoadTerrains()
+    {
+        Transform[] terrainParents = new Transform[(int)TerrainType.ENUM_LENGHT];
+        for (int i = 0; i < terrainParents.Length; i++)
+        {
+            terrainParents[i] = new GameObject().transform;
+            terrainParents[i].SetParent(transform);
+            terrainParents[i].name = ((TerrainType)i).ToString() + "_Terrains";
+        }
+
+        readyTerrains = new List<Terrain>[(int)TerrainType.ENUM_LENGHT];
+        for (int i = 0; i < readyTerrains.Length; i++)
+            readyTerrains[i] = new List<Terrain>();
+
+        var allTerrains = Resources.LoadAll<Terrain>(PATH_PREFABS_TERRAINS);
+        foreach (Terrain t in allTerrains)
+        {
+            for (int i = 0; i < roadLenght; i++)    //sbagliato! è un fix lezzo per essere sicuro di aver abbastanza pezzi id strada
+            {
+                Terrain instance = Instantiate(t, terrainParents[(int)t.TerrainType]);
+                readyTerrains[(int)instance.TerrainType].Add(instance);
+                instance.gameObject.SetActive(false);
+            }
+        }
+    }
+    private void PlaceFirstTerrains()
+    {
+        for (int i = 0; i < roadLenght; i++)
+            AddRandomTypeTerrain();
+    }
+
+    public void AddRandomTypeTerrain()
     {
         AddTerrain((TerrainType)UnityEngine.Random.Range(0, (int)TerrainType.ENUM_LENGHT));
     }
     private void AddTerrain(TerrainType terrainType)
     {
-        var newTerrain = Instantiate(GetTerrainFromType(terrainType));
-        activeTerrains.Enqueue(newTerrain);
+        if (activeTerrains.Count >= roadLenght)
+            RemoveTerrain();
 
-        newTerrain.transform.position = nextPosition;
-        nextPosition += Vector3.right * newTerrain.transform.localScale.x;
+        var newTerrain = RandomRetrieveFromReadied(terrainType);
 
-        if (activeTerrains.Count > roadLenght)
-            Destroy(activeTerrains.Dequeue().gameObject);
+        newTerrain.transform.position = NextPosition;
+        newTerrain.gameObject.SetActive(true);
+        activeTerrains.Add(newTerrain);
     }
-
-    private Terrain GetTerrainFromType(TerrainType terrainType)
+    private void RemoveTerrain()
     {
-        switch (terrainType) {
-            case TerrainType.grass: return grassTerrain;
-            case TerrainType.mud: return mudTerrain;
-            case TerrainType.road: return roadTerrain;
-        }
-        return null;
+        var toRemove = activeTerrains[0];
+        activeTerrains.RemoveAt(0);
+        readyTerrains[(int)toRemove.TerrainType].Add(toRemove);
+        toRemove.ResetMe();
+        toRemove.gameObject.SetActive(false);
     }
+    private Terrain RandomRetrieveFromReadied(TerrainType terrainType)
+    {
+        int readiedIndex = UnityEngine.Random.Range(0, readyTerrains[(int)terrainType].Count);
+        Terrain newTerrain = readyTerrains[(int)terrainType][readiedIndex];
+        readyTerrains[(int)terrainType].RemoveAt(readiedIndex);
+        return newTerrain;
+    }
+
+    public void RendererPositionUpdate(float x)
+    {
+        if (x >= activeTerrains[roadLenght/2].transform.position.x)
+            AddRandomTypeTerrain();
+    }
+    public Terrain GetTerrainAtX(float x)
+    {
+        return activeTerrains[(int)((x - OldestTerrain.transform.position.x) / TERRAIN_WIDTH) + 1];
+    }
+
 
 }
 
@@ -70,9 +132,13 @@ public class TerrainGenerator_Inspector : Editor
     {
         base.OnInspectorGUI();
         GUILayout.Space(16);
+
+        EditorGUI.BeginDisabledGroup(!Application.isPlaying);
         if (GUILayout.Button("Add Random Terrain"))
-            TerrainGenerator.AddRandomTerrain();
+            TerrainGenerator.AddRandomTypeTerrain();
         if (GUILayout.Button("Reset"))
             TerrainGenerator.Reset();
+        EditorGUI.EndDisabledGroup();
+
     }
 }
