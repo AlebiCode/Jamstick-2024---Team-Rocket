@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class RobotPart : MonoBehaviour
 {
-    [SerializeField] public float Height { get; private set; }
+    [SerializeField] private float height;
+    public float Height => height;
 }

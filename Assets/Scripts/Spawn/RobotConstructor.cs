@@ -44,6 +44,8 @@ public class RobotConstructor : MonoBehaviour
         selectedMovementPart.transform.parent = movementSlot;
         selectedMovementPart.transform.localPosition = Vector3.zero;
 
+        CreateCollider();
+
         selectedAttackPart.SetActive(true);
         selectedDefencePart.SetActive(true);
         selectedMovementPart.SetActive(true);
@@ -58,5 +60,16 @@ public class RobotConstructor : MonoBehaviour
         selectedAttackPart.SetActive(false);
         selectedDefencePart.SetActive(false);
         selectedMovementPart.SetActive(false);
+    }
+
+    private void CreateCollider() 
+    { 
+        BoxCollider collider = gameObject.AddComponent<BoxCollider>();
+
+        float colliderHeight = selectedAttackPart.GetComponent<RobotPart>().Height + selectedDefencePart.GetComponent<RobotPart>().Height + selectedMovementPart.GetComponent<RobotPart>().Height;
+
+        Vector3 colliderSize = new Vector3(1, colliderHeight, 1);
+
+        collider.size = colliderSize;
     }
 }
