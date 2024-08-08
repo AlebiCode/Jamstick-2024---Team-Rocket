@@ -69,7 +69,8 @@ public class RobotConstructor : MonoBehaviour
         float colliderHeight = selectedAttackPart.GetComponent<RobotPart>().Height + selectedDefencePart.GetComponent<RobotPart>().Height + selectedMovementPart.GetComponent<RobotPart>().Height;
 
         Vector3 colliderSize = new Vector3(1, colliderHeight, 1);
-
+        
+        collider.isTrigger = true;
         collider.size = colliderSize;
     }
 }

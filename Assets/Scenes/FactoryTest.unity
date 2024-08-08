@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: 466412566}
   - component: {fileID: 466412565}
   - component: {fileID: 466412567}
+  - component: {fileID: 466412568}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -271,28 +272,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 592e7b1c4b2300440820a1d37842cbb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolLimit: 50
-  attackPrefabs:
-  - {fileID: 4064724646443365883, guid: eba04bdbdd02fd5459ed46b87e63bda5, type: 3}
-  - {fileID: 3086225142658254836, guid: 9ab8f73ab5b3d7a4f8e02f28f78b2d58, type: 3}
-  - {fileID: 6555309097156330700, guid: 1cd2ceca67fe5e5499756f338c1f7d57, type: 3}
-  defencePrefabs:
-  - {fileID: 5497022099777440929, guid: 4465bbacedcc5d440b84d148a7871a98, type: 3}
-  - {fileID: 2988098238267930149, guid: 7b5fddf11972ff5498e09521ba0998f3, type: 3}
-  - {fileID: 1059231063914549953, guid: 66cead0c8b198b346a12ebc0b23929df, type: 3}
-  movementPrefabs:
-  - {fileID: 6905761466271689294, guid: 6bcd0ee5e4e3d5742964650de2163e6b, type: 3}
-  - {fileID: 5076134901220731500, guid: 407247cb98bc5d6478bc48c15761e52d, type: 3}
-  - {fileID: 3152331138944278544, guid: 70b47cb273877bd47be7718095e2a502, type: 3}
-  projectilesAttackPool: []
-  explosivesAttackPool: []
-  energyAttackPool: []
-  armorDefencePool: []
-  foamDefencePool: []
-  shieldDefencePool: []
-  pawsMovementPool: []
-  tracksMovementPool: []
-  wheelsMovementPool: []
   selectedAttack: 0
   selectedDefence: 0
   selectedMovement: 0
@@ -327,6 +306,48 @@ MonoBehaviour:
   robotPrefab: {fileID: 6585887685295828081, guid: 1289817dfe77c92449787656edd4bff2,
     type: 3}
   aliveRobots: []
+--- !u!114 &466412568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466412564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a316a397b2b7e74bb88d86cd0b13e9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  robotPartsPoolLimit: 50
+  bulletsPoolLimit: 100
+  bulletPrefabs:
+  - {fileID: 967040648877480591, guid: 7651df0264ac53f4b9872b47be083937, type: 3}
+  - {fileID: 3319040043364222539, guid: fff031fc3cd04aa40854e27c83bcd1f3, type: 3}
+  - {fileID: 6689492564785126039, guid: 1ee28b096ae9b4f4698cce6591cf2357, type: 3}
+  attackPrefabs:
+  - {fileID: 4064724646443365883, guid: eba04bdbdd02fd5459ed46b87e63bda5, type: 3}
+  - {fileID: 3086225142658254836, guid: 9ab8f73ab5b3d7a4f8e02f28f78b2d58, type: 3}
+  - {fileID: 6555309097156330700, guid: 1cd2ceca67fe5e5499756f338c1f7d57, type: 3}
+  defencePrefabs:
+  - {fileID: 5497022099777440929, guid: 4465bbacedcc5d440b84d148a7871a98, type: 3}
+  - {fileID: 2988098238267930149, guid: 7b5fddf11972ff5498e09521ba0998f3, type: 3}
+  - {fileID: 1059231063914549953, guid: 66cead0c8b198b346a12ebc0b23929df, type: 3}
+  movementPrefabs:
+  - {fileID: 6905761466271689294, guid: 6bcd0ee5e4e3d5742964650de2163e6b, type: 3}
+  - {fileID: 5076134901220731500, guid: 407247cb98bc5d6478bc48c15761e52d, type: 3}
+  - {fileID: 3152331138944278544, guid: 70b47cb273877bd47be7718095e2a502, type: 3}
+  projectileBulletPool: []
+  explosiveBulletPool: []
+  energyBulletPool: []
+  projectilesAttackPool: []
+  explosivesAttackPool: []
+  energyAttackPool: []
+  armorDefencePool: []
+  foamDefencePool: []
+  shieldDefencePool: []
+  pawsMovementPool: []
+  tracksMovementPool: []
+  wheelsMovementPool: []
 --- !u!1 &1265285204
 GameObject:
   m_ObjectHideFlags: 0
