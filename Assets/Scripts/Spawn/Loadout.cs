@@ -26,4 +26,16 @@ public class Loadout
     {
         return GameManager.PoolsManager.GetMovementGameObject(selectedMovement) as RobotMovement;
     }
+    public void SetAttack(int keyIndex)
+    {
+        selectedAttack = (AttacksKeys)keyIndex;
+    }
+    public void SetDefence(int keyIndex)
+    {
+        selectedDefence = (DefencesKeys)keyIndex;
+    }
+    public void SetMovement(int keyIndex)
+    {
+        selectedMovement = (MovementsKeys)keyIndex;
+    }
 }
