@@ -1,39 +1,66 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Factory : MonoBehaviour
 {
+    [SerializeField] private Transform parent;
+    [SerializeField] private GameObject robotPrefab;
     [SerializeField] private int spawnNumber;
-    public GameObject robotPrefab;
-    private Vector3 offset = new Vector3(0, 0, 3);
-    private Vector3 currentPosition = Vector3.zero;
-    [SerializeField] List<GameObject> aliveRobots;
+    [SerializeField] private float spawnCoolDown;
+    [SerializeField] private Vector3 spawnPosOffset;
+    [SerializeField] private Loadout loadout = new Loadout();
 
-    private void Start()
+    private Vector3 zOffset = new Vector3(0, 0, 3);
+
+    private float timer;
+
+    public Loadout Loadout => loadout;
+
+    private void Update()
     {
-    }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
+        timer += Time.deltaTime;
+        if (timer >= spawnCoolDown)
         {
-            currentPosition = Vector3.zero;
-            for(int i = 0; i < spawnNumber; i++) 
-            { 
-                GameObject robot = Instantiate(robotPrefab);
-                robot.transform.position = currentPosition;
-                aliveRobots.Add(robot);
-                currentPosition += offset;
-            }
+            Spawn();
+            timer = 0;
         }
-
-        if (Input.GetKeyDown(KeyCode.Return)) 
-        { 
-            foreach(GameObject robot in aliveRobots) 
-            { 
-                Destroy(robot);
-            }
-        }
-
     }
+
+    public void Spawn()
+    {
+        Vector3 currentZOffset = Vector3.zero;
+        for (int i = 0; i < spawnNumber; i++)
+        {
+            GameObject robot = Instantiate(robotPrefab, parent);
+            robot.transform.position = transform.position + spawnPosOffset + currentZOffset;
+            currentZOffset += zOffset;
+        }
+    }
+
+}
+
+[CustomEditor(typeof(Factory))]
+[CanEditMultipleObjects]
+public class Factory_Editor : Editor
+{
+
+    private Factory Factory => (Factory)target;
+
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        GUILayout.Space(16);
+        if (GUILayout.Button("Spawn"))
+        {
+            Factory.Spawn();
+        }
+        if (GUILayout.Button("Destroy"))
+        {
+            GameManager.instance.DestroyAllRobots();
+        }
+    }
+
 }

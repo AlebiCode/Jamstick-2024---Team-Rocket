@@ -6,22 +6,35 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] private AttacksKeys attackKey;
     [SerializeField] private float speed;
+    private float length;
     // private IController controller
     private void Update()
     {
-        transform.position += Vector3.right * Time.deltaTime * speed;
+        length = Time.deltaTime * speed;
+        if (Physics.Raycast(transform.position, transform.forward, length, GetTargetLayer(gameObject.layer), QueryTriggerInteraction.Collide))
+        {
+            //Metodo per danno
+            return;
+        }
+            transform.position += Vector3.right * length;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //GetController(/*other*/);
-
-
-    }
-
-    private void GetController(/*Collider other*/) 
+    public static int GetTargetLayer(int myLayer) 
     { 
-        //if(controller == null)
-        //  controller = Collider.gameObject.GetComponent<IController>();
+        switch (myLayer) 
+        {
+            case 6:
+                return 7;
+            default: 
+                return 6;
+        }
+    }
+
+    public static void GenerateBullet(int layerMask, Vector3 startPosition, AttacksKeys attackKey) 
+    {
+        GameObject bullet = GameManager.PoolsManager.GetBulletGameObject(attackKey);
+        bullet.layer = layerMask;
+        bullet.transform.position = startPosition;
+        bullet.SetActive(true);
     }
 }

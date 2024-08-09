@@ -5,13 +5,15 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
-public class TerrainGenerator : MonoBehaviour
+[System.Serializable]
+public class TerrainGenerator
 {
     public const float TERRAIN_WIDTH = 4;
-    private const string PATH_PREFABS_TERRAINS = "Prefabs/Terrain";
-    
-    public static TerrainGenerator instance;
 
+    private const string PATH_PREFABS_TERRAINS = "Prefabs/Terrain/Variants";
+
+    [SerializeField] private Transform parent;
+    [SerializeField] private EnemyBase enemyBasePrefab;
     [SerializeField] private int roadLenght = 5;
 
     private List<Terrain>[] readyTerrains;
@@ -19,22 +21,10 @@ public class TerrainGenerator : MonoBehaviour
 
     private Terrain OldestTerrain => activeTerrains[0];
     private Terrain NewestTerrain => activeTerrains[activeTerrains.Count - 1];
-    private Vector3 NextPosition => activeTerrains.Count > 0 ? NewestTerrain.transform.position + Vector3.right * TERRAIN_WIDTH : Vector3.zero /*new Vector3(-((roadLenght - 1) * TERRAIN_WIDTH / 2), 0, 0)*/;
+    private Vector3 NextPosition => activeTerrains.Count > 0 ? NewestTerrain.transform.position + Vector3.right * TERRAIN_WIDTH : Vector3.zero;
+    public EnemyBase EnemyBasePrefab => enemyBasePrefab;
 
-
-    private void Awake()
-    {
-        if (instance)
-            Destroy(this);
-        else
-            instance = this;
-    }
-    private void Start()
-    {
-        Initialize();
-    }
-
-    private void Initialize()
+    public void Initialize()
     {
         LoadTerrains();
         PlaceFirstTerrains();
@@ -42,7 +32,7 @@ public class TerrainGenerator : MonoBehaviour
     public void Reset()
     {
         for (int i = 0; i < activeTerrains.Count; i++)
-            Destroy(activeTerrains[i].gameObject);
+            UnityEngine.Object.Destroy(activeTerrains[i].gameObject);
         activeTerrains.Clear();
         PlaceFirstTerrains();
     }
@@ -53,7 +43,7 @@ public class TerrainGenerator : MonoBehaviour
         for (int i = 0; i < terrainParents.Length; i++)
         {
             terrainParents[i] = new GameObject().transform;
-            terrainParents[i].SetParent(transform);
+            terrainParents[i].SetParent(parent);
             terrainParents[i].name = ((TerrainType)i).ToString() + "_Terrains";
         }
 
@@ -66,7 +56,7 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int i = 0; i < roadLenght; i++)    //sbagliato! è un fix lezzo per essere sicuro di aver abbastanza pezzi id strada
             {
-                Terrain instance = Instantiate(t, terrainParents[(int)t.TerrainType]);
+                Terrain instance = UnityEngine.Object.Instantiate(t, terrainParents[(int)t.TerrainType]);
                 readyTerrains[(int)instance.TerrainType].Add(instance);
                 instance.gameObject.SetActive(false);
             }
@@ -91,7 +81,11 @@ public class TerrainGenerator : MonoBehaviour
 
         newTerrain.transform.position = NextPosition;
         newTerrain.gameObject.SetActive(true);
+        newTerrain.PositionId = activeTerrains.Count;
         activeTerrains.Add(newTerrain);
+
+        if (UnityEngine.Random.Range(0,3) == 0)
+            newTerrain.AddEnemyBase();
     }
     private void RemoveTerrain()
     {
@@ -100,6 +94,8 @@ public class TerrainGenerator : MonoBehaviour
         readyTerrains[(int)toRemove.TerrainType].Add(toRemove);
         toRemove.ResetMe();
         toRemove.gameObject.SetActive(false);
+        for (int i = 0; i < activeTerrains.Count; i++)
+            activeTerrains[i].PositionId--;
     }
     private Terrain RandomRetrieveFromReadied(TerrainType terrainType)
     {
@@ -116,18 +112,50 @@ public class TerrainGenerator : MonoBehaviour
     }
     public Terrain GetTerrainAtX(float x)
     {
-        return activeTerrains[(int)((x - OldestTerrain.transform.position.x) / TERRAIN_WIDTH) + 1];
+        return activeTerrains[GetTerrainIDAtX(x)];
+    }
+    public int GetTerrainIDAtX(float x)
+    {
+        return (int)((x - OldestTerrain.transform.position.x) / TERRAIN_WIDTH);
     }
 
+    public Terrain GetTerrainAtId(int id)
+    {
+        return activeTerrains[id];
+    }
+    public List<Terrain> GetTerrainAtX(float x, int count)
+    {
+        return activeTerrains.GetRange((int)((x - OldestTerrain.transform.position.x) / TERRAIN_WIDTH), count);
+    }
+    public List<Terrain> GetPreviousTerrains(Terrain terrain)
+    {
+        for (int i = 0; i < activeTerrains.Count; i++)
+        {
+            if (activeTerrains[i] == terrain)
+                return activeTerrains.GetRange(0, i + 1);
+        }
+        return new List<Terrain>();
+    }
+
+    public List<Terrain> GetNextTerrains(float xPos, int count)
+    {
+        return activeTerrains.GetRange(GetTerrainIDAtX(xPos), count);
+    }
 
 }
 
-[CustomEditor(typeof(TerrainGenerator))]
+/*
+[CustomPropertyDrawer(typeof(TerrainGenerator))]
 [CanEditMultipleObjects]
-public class TerrainGenerator_Inspector : Editor
+public class TerrainGenerator_Inspector : PropertyDrawer
 {
-    private TerrainGenerator TerrainGenerator => (TerrainGenerator)target;
-
+    //private TerrainGenerator TerrainGenerator => (TerrainGenerator)target;
+    
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        base.OnGUI(position, property, label);
+    }
+    
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
@@ -141,4 +169,5 @@ public class TerrainGenerator_Inspector : Editor
         EditorGUI.EndDisabledGroup();
 
     }
-}
+
+}*/

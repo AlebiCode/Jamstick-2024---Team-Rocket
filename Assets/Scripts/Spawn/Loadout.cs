@@ -5,39 +5,25 @@ using UnityEngine;
 public enum AttacksKeys { PROJECTILES, EXPLOSIVES, ENERGY }
 public enum DefencesKeys { ARMOR, FOAM, SHIELDS }
 public enum MovementsKeys { PAWS, TRACKS, WHEELS }
-public class Loadout : MonoBehaviour
+
+[System.Serializable]
+public class Loadout
 {
     public AttacksKeys selectedAttack;
     public DefencesKeys selectedDefence;
     public MovementsKeys selectedMovement;
 
-    public static Loadout Instance { get; private set; }
 
-    private void Awake()
+    public RobotWeapon GetAttackGameObject() 
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-
+        return GameManager.PoolsManager.GetAttackGameObject(selectedAttack) as RobotWeapon;
     }
-
-
-
-    public GameObject GetAttackGameObject() 
+    public RobotArmor GetDefenceGameObject()
     {
-        return PoolsManager.Instance.GetAttackGameObject(selectedAttack);
+        return GameManager.PoolsManager.GetDefenceGameObject(selectedDefence) as RobotArmor;
     }
-    public GameObject GetDefenceGameObject()
+    public RobotMovement GetMovementGameObject()
     {
-        return PoolsManager.Instance.GetDefenceGameObject(selectedDefence);
-    }
-    public GameObject GetMovementGameObject()
-    {
-        return PoolsManager.Instance.GetMovementGameObject(selectedMovement);
+        return GameManager.PoolsManager.GetMovementGameObject(selectedMovement) as RobotMovement;
     }
 }
