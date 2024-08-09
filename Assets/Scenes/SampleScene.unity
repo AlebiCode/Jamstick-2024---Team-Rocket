@@ -307,6 +307,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1552513847}
+  - {fileID: 566095207}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &344440502
@@ -321,6 +322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3f50051d7b75094ca42b50bbafd877f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectilePool: {fileID: 566095207}
   cameraController: {fileID: 330585548}
   factory: {fileID: 1767497049}
   terrainGenerator:
@@ -328,10 +330,19 @@ MonoBehaviour:
     enemyBasePrefab: {fileID: 7375197123153482887, guid: 95ee6c8a9b555c0439e7db6e431190e6,
       type: 3}
     roadLenght: 8
+    minEnemyDistance: 8
+    enemyChance: 1
+    enemyBaseGenerator:
+      enemyDudeParent: {fileID: 672078715}
+      enemyDudePrefab: {fileID: -7415924543690045092, guid: b5dc64c1177f14e4cad24c3558167831,
+        type: 3}
+      minEnemies: 3
+      maxEnemies: 6
   poolsManager:
     robotPartsPoolLimit: 10
     bulletsPoolLimit: 10
     poolParent: {fileID: 1552513847}
+    bulletPoolParent: {fileID: 566095207}
     bulletPrefabs:
     - {fileID: 967040648877480591, guid: 7651df0264ac53f4b9872b47be083937, type: 3}
     - {fileID: 3319040043364222539, guid: fff031fc3cd04aa40854e27c83bcd1f3, type: 3}
@@ -467,6 +478,37 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!1 &566095206
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 566095207}
+  m_Layer: 0
+  m_Name: ProjetilePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &566095207
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 566095206}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 344440500}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &612599715
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,6 +535,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 9.402243, y: 1.674505, z: 6.614839}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &672078714
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 672078715}
+  m_Layer: 0
+  m_Name: Enemies
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &672078715
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672078714}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 15.057991, y: -13.998453, z: 64.915184}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -730,8 +803,8 @@ MonoBehaviour:
   parent: {fileID: 612599716}
   robotPrefab: {fileID: 6585887685295828081, guid: 1289817dfe77c92449787656edd4bff2,
     type: 3}
-  spawnNumber: 10
-  spawnCoolDown: 2
+  spawnNumber: 2
+  spawnCoolDown: 4
   spawnPosOffset: {x: 6, y: 0, z: 0}
   loadout:
     selectedAttack: 0
@@ -746,5 +819,6 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 344440500}
   - {fileID: 1767497048}
-  - {fileID: 612599716}
   - {fileID: 859932930}
+  - {fileID: 612599716}
+  - {fileID: 672078715}

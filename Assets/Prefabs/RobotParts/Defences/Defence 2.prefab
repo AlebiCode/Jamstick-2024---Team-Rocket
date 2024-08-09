@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3582373401990598010}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AttackSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 8340051728800849808}
   - component: {fileID: 7773291859742834312}
   - component: {fileID: -8831159622154912654}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Defence 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4866099871155689434}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MovementSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}

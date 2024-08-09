@@ -15,14 +15,20 @@ public class TerrainGenerator
     [SerializeField] private Transform parent;
     [SerializeField] private EnemyBase enemyBasePrefab;
     [SerializeField] private int roadLenght = 5;
+    [SerializeField] private int minEnemyDistance = 8;
+    [SerializeField] private float enemyChance = 1;
+    [SerializeField] private EnemyBaseGenerator enemyBaseGenerator;
 
     private List<Terrain>[] readyTerrains;
     private List<Terrain> activeTerrains = new List<Terrain>();
+    
+    private int currentDistance;
 
     private Terrain OldestTerrain => activeTerrains[0];
     private Terrain NewestTerrain => activeTerrains[activeTerrains.Count - 1];
     private Vector3 NextPosition => activeTerrains.Count > 0 ? NewestTerrain.transform.position + Vector3.right * TERRAIN_WIDTH : Vector3.zero;
     public EnemyBase EnemyBasePrefab => enemyBasePrefab;
+    public EnemyBaseGenerator EnemyBaseGenerator => enemyBaseGenerator;
 
     public void Initialize()
     {
@@ -83,8 +89,9 @@ public class TerrainGenerator
         newTerrain.gameObject.SetActive(true);
         newTerrain.PositionId = activeTerrains.Count;
         activeTerrains.Add(newTerrain);
+        currentDistance++;
 
-        if (UnityEngine.Random.Range(0,3) == 0)
+        if (currentDistance >= minEnemyDistance && UnityEngine.Random.Range(0, 1) <= enemyChance)
             newTerrain.AddEnemyBase();
     }
     private void RemoveTerrain()
@@ -118,7 +125,6 @@ public class TerrainGenerator
     {
         return (int)((x - OldestTerrain.transform.position.x) / TERRAIN_WIDTH);
     }
-
     public Terrain GetTerrainAtId(int id)
     {
         return activeTerrains[id];

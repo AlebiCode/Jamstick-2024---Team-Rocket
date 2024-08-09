@@ -5,9 +5,12 @@ using UnityEngine.Events;
 
 public class EnemyBase : MonoBehaviour
 {
-    private List<Terrain> myTerrainsRange;
-    private Robot currentTarget;
+    [SerializeField] private float minZPosition = -3;
+    [SerializeField] private float maxZPosition = 3;
 
+    //private List<Terrain> myTerrainsRange;
+    private List<Enemy> enemies = new List<Enemy>();
+    private Robot currentTarget;
 
     public void Update()
     {
@@ -19,10 +22,21 @@ public class EnemyBase : MonoBehaviour
         Shoot();
     }
 
-    public void Initialize(Terrain terrain)
+    public void Initialize(Terrain terrain, Enemy prefab, int nEnemies)
     {
-        myTerrainsRange = GameManager.TerrainGenerator.GetPreviousTerrains(terrain);
-        TargetClosestRobot();
+        //myTerrainsRange = GameManager.TerrainGenerator.GetPreviousTerrains(terrain);
+        SpawnEnemies(prefab, nEnemies);
+    }
+
+    private void SpawnEnemies(Enemy enemyPrefab, int quantity)
+    {
+        for (int i = 0; i < quantity; i++)
+        {
+            var enemy = Instantiate(enemyPrefab, GameManager.TerrainGenerator.EnemyBaseGenerator.EnemyDudeParent);
+            enemy.transform.position = transform.position + new Vector3(0, 1, minZPosition + (i * ((maxZPosition - minZPosition) / (quantity - 1))));
+            enemy.Initialize(null);
+            enemies.Add(enemy);
+        }
     }
 
     public void OnBotEnteredMyRange(Robot robot)
@@ -53,6 +67,21 @@ public class EnemyBase : MonoBehaviour
     private void Shoot()
     {
 
+    }
+
+    public Enemy GetClosestEnemy(float z)
+    {
+        Enemy closest = null;
+        float dist = float.PositiveInfinity;
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            float newDist = Mathf.Abs(enemies[i].transform.position.z - z);
+            if (newDist >= dist)
+                continue;
+            closest = enemies[i];
+            dist = newDist;
+        }
+        return closest;
     }
 
 }

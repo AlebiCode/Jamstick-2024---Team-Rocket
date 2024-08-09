@@ -27,9 +27,7 @@ public class Terrain : MonoBehaviour
 
     public void AddEnemyBase()
     {
-        enemyBase = Instantiate(GameManager.TerrainGenerator.EnemyBasePrefab, enemyBaseSocket, true);
-        enemyBase.transform.localPosition = Vector3.zero;
-        enemyBase.Initialize(this);
+        enemyBase = GameManager.TerrainGenerator.EnemyBaseGenerator.GenerateBase(enemyBaseSocket, this);
     }
 
     public void AddRobot(Robot robot)

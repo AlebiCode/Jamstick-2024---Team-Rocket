@@ -12,7 +12,8 @@ public class Robot : MonoBehaviour
 
     public float terrainAdvancement;
 
-    private Weapon weapon => robotConstructor.SelectedAttackPart.Weapon;
+    private Weapon Weapon => robotConstructor.SelectedAttackPart.Weapon;
+    private bool HasTarget => Weapon.HasTarget;
     public float MyX => transform.position.x;
     public bool IsAlive => hp > 0;
 
@@ -23,15 +24,22 @@ public class Robot : MonoBehaviour
 
     void Update()
     {
-        float movement = speed * Time.deltaTime;
-        transform.position += Vector3.right * movement;
-        terrainAdvancement += movement;
-        if (terrainAdvancement >= TerrainGenerator.TERRAIN_WIDTH)
+        if (speed != 0)
         {
-            OnNewTerrainReached();
-            terrainAdvancement -= TerrainGenerator.TERRAIN_WIDTH;
+            float movement = speed * Time.deltaTime;
+            transform.position += Vector3.right * movement;
+            terrainAdvancement += movement;
+            if (terrainAdvancement >= TerrainGenerator.TERRAIN_WIDTH)
+            {
+                OnNewTerrainReached();
+                terrainAdvancement -= TerrainGenerator.TERRAIN_WIDTH;
+            }
+            GameManager.instance.Advancement(MyX);
         }
-        GameManager.instance.Advancement(MyX);
+        if (HasTarget && speed != 0)
+        {
+            Weapon.AimAtTarget();
+        }
     }
     
     private void Activate()
@@ -76,10 +84,11 @@ public class Robot : MonoBehaviour
     {
         targets.Enqueue(enemyBase);
         speed = 0;
-        weapon.enabled = true;
+        Weapon.EngageTarget(enemyBase.GetClosestEnemy(transform.position.z).transform);
     }
     public void OnTagetLost()
     {
+        Weapon.Disengage();
         targets.Dequeue();
     }
 

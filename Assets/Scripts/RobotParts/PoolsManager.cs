@@ -8,10 +8,13 @@ public class PoolsManager
     [SerializeField] private int robotPartsPoolLimit;
     [SerializeField] private int bulletsPoolLimit;
     [SerializeField] private Transform poolParent;
+    [SerializeField] private Transform bulletPoolParent;
+
     [SerializeField] private GameObject[] bulletPrefabs;
     [SerializeField] private RobotPart[] attackPrefabs;
     [SerializeField] private RobotPart[] defencePrefabs;
     [SerializeField] private RobotPart[] movementPrefabs;
+
 
     private List<GameObject> projectileBulletPool = new();
     private List<GameObject> explosiveBulletPool = new();
@@ -47,9 +50,15 @@ public class PoolsManager
 
         for (int i = 0; i < bulletsPoolLimit; i++)
         {
-            InstantiateGOPool(projectileBulletPool, bulletPrefabs[0]);
-            InstantiateGOPool(explosiveBulletPool, bulletPrefabs[1]);
-            InstantiateGOPool(energyBulletPool, bulletPrefabs[2]);
+            InstantiateBulletPool(projectileBulletPool, bulletPrefabs[0]);
+            InstantiateBulletPool(explosiveBulletPool, bulletPrefabs[1]);
+            InstantiateBulletPool(energyBulletPool, bulletPrefabs[2]);
+        }
+        for (int i = 0; i < robotPartsPoolLimit; i++)
+        {
+            InstantiateBulletPool(projectileBulletPool, bulletPrefabs[0]);
+            InstantiateBulletPool(explosiveBulletPool, bulletPrefabs[1]);
+            InstantiateBulletPool(energyBulletPool, bulletPrefabs[2]);
         }
     }
 
@@ -59,9 +68,9 @@ public class PoolsManager
         pool.Add(robotPart);
         robotPart.gameObject.SetActive(false);
     }
-    private void InstantiateGOPool(List<GameObject> pool, GameObject prefab)
+    private void InstantiateBulletPool(List<GameObject> pool, GameObject prefab)
     {
-        GameObject robotPart = Object.Instantiate(prefab, poolParent);
+        GameObject robotPart = Object.Instantiate(prefab, bulletPoolParent);
         pool.Add(robotPart);
         robotPart.gameObject.SetActive(false);
     }
@@ -122,7 +131,20 @@ public class PoolsManager
                 return RetrieveFromPool(explosiveBulletPool, bulletPrefabs[1]);
 
             case AttacksKeys.ENERGY:
-                return RetrieveFromPool(explosiveBulletPool, bulletPrefabs[2]);
+                return RetrieveFromPool(energyBulletPool, bulletPrefabs[2]);
+        }
+    }
+    public void PoolBullet(Bullet bullet)
+    {
+        bullet.gameObject.SetActive(false);
+        switch (bullet.AttacksKeys)
+        {
+            default:
+                break;
+            case AttacksKeys.EXPLOSIVES:
+                break;
+            case AttacksKeys.ENERGY:
+                break;
         }
     }
 
@@ -152,5 +174,6 @@ public class PoolsManager
         pool.Add(newInstance);
         return newInstance;
     }
+
 
 }

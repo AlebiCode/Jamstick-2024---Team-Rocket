@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
+    [SerializeField] private Transform projectilePool;
     [SerializeField] private CameraController cameraController;
     [SerializeField] private Factory factory;
     [SerializeField] private TerrainGenerator terrainGenerator;
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
     public static TerrainGenerator TerrainGenerator => instance.terrainGenerator;
     public static Factory Factory => instance.factory;
     public static PoolsManager PoolsManager => instance.poolsManager;
+    public static Transform ProjectilePool => instance.projectilePool;
 
     private void Awake()
     {

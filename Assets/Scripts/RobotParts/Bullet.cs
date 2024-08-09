@@ -4,19 +4,39 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    private const float DEATH_TIME = 5;
+
     [SerializeField] private AttacksKeys attackKey;
     [SerializeField] private float speed;
     private float length;
+
+    private float deathTimer;
+
+    public AttacksKeys AttacksKeys => attackKey;
+    private static RaycastHit hitInfo;
+
+    private void OnEnable()
+    {
+        deathTimer = DEATH_TIME;
+    }
+
     // private IController controller
     private void Update()
     {
+        deathTimer -= Time.deltaTime;
+        if (deathTimer <= 0)
+        {
+            Pool();
+            return;
+        }
+
         length = Time.deltaTime * speed;
-        if (Physics.Raycast(transform.position, transform.forward, length, GetTargetLayer(gameObject.layer), QueryTriggerInteraction.Collide))
+        if (Physics.Raycast(transform.position, transform.forward, out hitInfo, length, 1 << GetTargetLayer(gameObject.layer), QueryTriggerInteraction.Collide))
         {
             //Metodo per danno
             return;
         }
-            transform.position += Vector3.right * length;
+        transform.position += transform.forward * length;
     }
 
     public static int GetTargetLayer(int myLayer) 
@@ -30,11 +50,18 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    public static void GenerateBullet(int layerMask, Vector3 startPosition, AttacksKeys attackKey) 
+    public static void GenerateBullet(Transform origin, AttacksKeys attackKey) 
     {
         GameObject bullet = GameManager.PoolsManager.GetBulletGameObject(attackKey);
-        bullet.layer = layerMask;
-        bullet.transform.position = startPosition;
+        bullet.layer = origin.gameObject.layer;
+        bullet.transform.position = origin.transform.position;
+        bullet.transform.rotation = origin.rotation;
         bullet.SetActive(true);
     }
+
+    private void Pool()
+    {
+        GameManager.PoolsManager.PoolBullet(this);
+    }
+
 }

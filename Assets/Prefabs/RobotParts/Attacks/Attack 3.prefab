@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7628523901773579200}
   - component: {fileID: 1528616390485997627}
   - component: {fileID: 2209842825360024769}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AttackModel 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 4387843032687913810}
   - component: {fileID: -4254826842590180913}
   - component: {fileID: -6990876432438164549}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Attack 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

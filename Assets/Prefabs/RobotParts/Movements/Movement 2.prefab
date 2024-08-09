@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 875688490415083825}
   - component: {fileID: 689894879455459284}
   - component: {fileID: 7119725185317110372}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MovementModel 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8883872474890291869}
   - component: {fileID: 6914365920442743632}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Movement 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

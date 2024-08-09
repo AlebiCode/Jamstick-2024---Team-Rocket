@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class RobotConstructor
 {
-    private AttacksKeys selectedAttack;
-    private DefencesKeys selectedDefence;
-    private MovementsKeys selectedMovement;
-
     private RobotWeapon selectedAttackPart;
     private RobotArmor selectedDefencePart;
     private RobotMovement selectedMovementPart;
@@ -16,26 +12,19 @@ public class RobotConstructor
 
     public void Spawn(Robot robot)
     {
-        selectedAttack = GameManager.Factory.Loadout.selectedAttack;
-        selectedDefence = GameManager.Factory.Loadout.selectedDefence;
-        selectedMovement = GameManager.Factory.Loadout.selectedMovement;
-
         selectedAttackPart = GameManager.Factory.Loadout.GetAttackGameObject();
         selectedDefencePart = GameManager.Factory.Loadout.GetDefenceGameObject();
         selectedMovementPart = GameManager.Factory.Loadout.GetMovementGameObject();
 
-        selectedDefencePart.transform.parent = robot.transform;
-        selectedDefencePart.transform.localPosition = Vector3.zero;
-
-        Transform attackSlot = selectedDefencePart.transform.Find("AttackSlot");
-        Transform movementSlot = selectedDefencePart.transform.Find("MovementSlot");
-
-        selectedAttackPart.transform.parent = attackSlot;
-        selectedAttackPart.transform.localPosition = Vector3.zero;
-        selectedAttackPart.gameObject.layer = robot.gameObject.layer;
-
-        selectedMovementPart.transform.parent = movementSlot;
+        selectedMovementPart.transform.parent = robot.transform;
         selectedMovementPart.transform.localPosition = Vector3.zero;
+
+        selectedDefencePart.transform.parent = robot.transform;
+        selectedDefencePart.transform.localPosition = new Vector3(0, selectedDefencePart.Height);
+
+        selectedAttackPart.transform.parent = robot.transform;
+        selectedAttackPart.transform.localPosition = new Vector3(0, selectedDefencePart.Height + selectedAttackPart.Height);
+        selectedAttackPart.gameObject.layer = robot.gameObject.layer;
 
         //CreateCollider();
 
