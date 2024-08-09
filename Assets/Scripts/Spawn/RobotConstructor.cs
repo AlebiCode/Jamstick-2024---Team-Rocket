@@ -2,37 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RobotConstructor : MonoBehaviour
+public class RobotConstructor
 {
     private AttacksKeys selectedAttack;
     private DefencesKeys selectedDefence;
     private MovementsKeys selectedMovement;
 
-    private GameObject selectedAttackPart;
-    private GameObject selectedDefencePart;
-    private GameObject selectedMovementPart;
+    private RobotWeapon selectedAttackPart;
+    private RobotArmor selectedDefencePart;
+    private RobotMovement selectedMovementPart;
 
-    private void Awake()
+    public RobotWeapon SelectedAttackPart => selectedAttackPart;
+
+    public void Spawn(Robot robot)
     {
-        Spawn();
-    }
+        selectedAttack = GameManager.Factory.Loadout.selectedAttack;
+        selectedDefence = GameManager.Factory.Loadout.selectedDefence;
+        selectedMovement = GameManager.Factory.Loadout.selectedMovement;
 
-    private void OnDestroy()
-    {
-        Despawn();
-    }
+        selectedAttackPart = GameManager.Factory.Loadout.GetAttackGameObject();
+        selectedDefencePart = GameManager.Factory.Loadout.GetDefenceGameObject();
+        selectedMovementPart = GameManager.Factory.Loadout.GetMovementGameObject();
 
-    private void Spawn()
-    {
-        selectedAttack = Loadout.Instance.selectedAttack;
-        selectedDefence = Loadout.Instance.selectedDefence;
-        selectedMovement = Loadout.Instance.selectedMovement;
-
-        selectedAttackPart = Loadout.Instance.GetAttackGameObject();
-        selectedDefencePart = Loadout.Instance.GetDefenceGameObject();
-        selectedMovementPart = Loadout.Instance.GetMovementGameObject();
-
-        selectedDefencePart.transform.parent = transform;
+        selectedDefencePart.transform.parent = robot.transform;
         selectedDefencePart.transform.localPosition = Vector3.zero;
 
         Transform attackSlot = selectedDefencePart.transform.Find("AttackSlot");
@@ -40,16 +32,16 @@ public class RobotConstructor : MonoBehaviour
 
         selectedAttackPart.transform.parent = attackSlot;
         selectedAttackPart.transform.localPosition = Vector3.zero;
-        selectedAttackPart.layer = gameObject.layer;
+        selectedAttackPart.gameObject.layer = robot.gameObject.layer;
 
         selectedMovementPart.transform.parent = movementSlot;
         selectedMovementPart.transform.localPosition = Vector3.zero;
 
-        CreateCollider();
+        //CreateCollider();
 
-        selectedAttackPart.SetActive(true);
-        selectedDefencePart.SetActive(true);
-        selectedMovementPart.SetActive(true);
+        selectedAttackPart.gameObject.SetActive(true);
+        selectedDefencePart.gameObject.SetActive(true);
+        selectedMovementPart.gameObject.SetActive(true);
     }
 
     private void Despawn()
@@ -58,11 +50,11 @@ public class RobotConstructor : MonoBehaviour
         selectedDefencePart.transform.parent = null;
         selectedMovementPart.transform.parent = null;
 
-        selectedAttackPart.SetActive(false);
-        selectedDefencePart.SetActive(false);
-        selectedMovementPart.SetActive(false);
+        selectedAttackPart.gameObject.SetActive(false);
+        selectedDefencePart.gameObject.SetActive(false);
+        selectedMovementPart.gameObject.SetActive(false);
     }
-
+    /*
     private void CreateCollider() 
     { 
         BoxCollider collider = gameObject.AddComponent<BoxCollider>();
@@ -74,4 +66,5 @@ public class RobotConstructor : MonoBehaviour
         collider.isTrigger = true;
         collider.size = colliderSize;
     }
+    */
 }

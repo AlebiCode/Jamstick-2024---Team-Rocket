@@ -2,78 +2,71 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoolsManager : MonoBehaviour
+[System.Serializable]
+public class PoolsManager
 {
     [SerializeField] private int robotPartsPoolLimit;
     [SerializeField] private int bulletsPoolLimit;
     [SerializeField] private Transform poolParent;
     [SerializeField] private GameObject[] bulletPrefabs;
-    [SerializeField] private GameObject[] attackPrefabs;
-    [SerializeField] private GameObject[] defencePrefabs;
-    [SerializeField] private GameObject[] movementPrefabs;
+    [SerializeField] private RobotPart[] attackPrefabs;
+    [SerializeField] private RobotPart[] defencePrefabs;
+    [SerializeField] private RobotPart[] movementPrefabs;
 
     private List<GameObject> projectileBulletPool = new();
     private List<GameObject> explosiveBulletPool = new();
     private List<GameObject> energyBulletPool = new();
-    private List<GameObject> projectilesAttackPool = new();
-    private List<GameObject> explosivesAttackPool = new();
-    private List<GameObject> energyAttackPool = new();
-    private List<GameObject> armorDefencePool = new();
-    private List<GameObject> foamDefencePool = new();
-    private List<GameObject> shieldDefencePool = new();
-    private List<GameObject> pawsMovementPool = new();
-    private List<GameObject> tracksMovementPool = new();
-    private List<GameObject> wheelsMovementPool = new();
 
-    public static PoolsManager Instance { get; private set; }
+    private List<RobotPart> projectilesAttackPool = new();
+    private List<RobotPart> explosivesAttackPool = new();
+    private List<RobotPart> energyAttackPool = new();
+    private List<RobotPart> armorDefencePool = new();
+    private List<RobotPart> foamDefencePool = new();
+    private List<RobotPart> shieldDefencePool = new();
+    private List<RobotPart> pawsMovementPool = new();
+    private List<RobotPart> tracksMovementPool = new();
+    private List<RobotPart> wheelsMovementPool = new();
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-
-        GeneratePools();
-    }
-    private void GeneratePools()
+    public void GeneratePools()
     {
         for (int i = 0; i < robotPartsPoolLimit; i++)
         {
-            InstantiateToPool(projectilesAttackPool, attackPrefabs[0]);
-            InstantiateToPool(explosivesAttackPool, attackPrefabs[1]);
-            InstantiateToPool(energyAttackPool, attackPrefabs[2]);
+            InstantiateRobotPartPool(projectilesAttackPool, attackPrefabs[0]);
+            InstantiateRobotPartPool(explosivesAttackPool, attackPrefabs[1]);
+            InstantiateRobotPartPool(energyAttackPool, attackPrefabs[2]);
 
-            InstantiateToPool(armorDefencePool, defencePrefabs[0]);
-            InstantiateToPool(foamDefencePool, defencePrefabs[1]);
-            InstantiateToPool(shieldDefencePool, defencePrefabs[2]);
+            InstantiateRobotPartPool(armorDefencePool, defencePrefabs[0]);
+            InstantiateRobotPartPool(foamDefencePool, defencePrefabs[1]);
+            InstantiateRobotPartPool(shieldDefencePool, defencePrefabs[2]);
 
-            InstantiateToPool(pawsMovementPool, movementPrefabs[0]);
-            InstantiateToPool(tracksMovementPool, movementPrefabs[1]);
-            InstantiateToPool(wheelsMovementPool, movementPrefabs[2]);
+            InstantiateRobotPartPool(pawsMovementPool, movementPrefabs[0]);
+            InstantiateRobotPartPool(tracksMovementPool, movementPrefabs[1]);
+            InstantiateRobotPartPool(wheelsMovementPool, movementPrefabs[2]);
 
         }
 
         for (int i = 0; i < bulletsPoolLimit; i++)
         {
-            InstantiateToPool(projectileBulletPool, bulletPrefabs[0]);
-            InstantiateToPool(explosiveBulletPool, bulletPrefabs[1]);
-            InstantiateToPool(energyBulletPool, bulletPrefabs[2]);
+            InstantiateGOPool(projectileBulletPool, bulletPrefabs[0]);
+            InstantiateGOPool(explosiveBulletPool, bulletPrefabs[1]);
+            InstantiateGOPool(energyBulletPool, bulletPrefabs[2]);
         }
     }
 
-    private void InstantiateToPool(List<GameObject> pool, GameObject prefab)
+    private void InstantiateRobotPartPool(List<RobotPart> pool, RobotPart prefab)
     {
-        GameObject projectile = Instantiate(prefab, poolParent);
-        pool.Add(projectile);
-        projectile.SetActive(false);
+        RobotPart robotPart = Object.Instantiate(prefab, poolParent);
+        pool.Add(robotPart);
+        robotPart.gameObject.SetActive(false);
+    }
+    private void InstantiateGOPool(List<GameObject> pool, GameObject prefab)
+    {
+        GameObject robotPart = Object.Instantiate(prefab, poolParent);
+        pool.Add(robotPart);
+        robotPart.gameObject.SetActive(false);
     }
 
-    public GameObject GetAttackGameObject(AttacksKeys attackKey)
+    public RobotPart GetAttackGameObject(AttacksKeys attackKey)
     {
         switch (attackKey)
         {
@@ -88,7 +81,7 @@ public class PoolsManager : MonoBehaviour
         }
     }
 
-    public GameObject GetDefenceGameObject(DefencesKeys defenceKey)
+    public RobotPart GetDefenceGameObject(DefencesKeys defenceKey)
     {
         switch (defenceKey)
         {
@@ -103,7 +96,7 @@ public class PoolsManager : MonoBehaviour
         }
     }
 
-    public GameObject GetMovementGameObject(MovementsKeys movementKey)
+    public RobotPart GetMovementGameObject(MovementsKeys movementKey)
     {
         switch (movementKey)
         {
@@ -133,17 +126,31 @@ public class PoolsManager : MonoBehaviour
         }
     }
 
-    private GameObject RetrieveFromPool(List<GameObject> pool, GameObject prefab)
+    private RobotPart RetrieveFromPool(List<RobotPart> pool, RobotPart prefab)
     {
-        foreach (GameObject go in pool)
+        foreach (RobotPart go in pool)
         {
-            if (!go.activeInHierarchy)
+            if (!go.gameObject.activeInHierarchy)
             {
                 return go;
             }
         }
-        GameObject newInstance = Instantiate(prefab, poolParent);
-        projectilesAttackPool.Add(newInstance);
+        RobotPart newInstance = Object.Instantiate(prefab, poolParent);
+        pool.Add(newInstance);
         return newInstance;
     }
+    private GameObject RetrieveFromPool(List<GameObject> pool, GameObject prefab)
+    {
+        foreach (GameObject go in pool)
+        {
+            if (!go.gameObject.activeInHierarchy)
+            {
+                return go;
+            }
+        }
+        GameObject newInstance = Object.Instantiate(prefab, poolParent);
+        pool.Add(newInstance);
+        return newInstance;
+    }
+
 }

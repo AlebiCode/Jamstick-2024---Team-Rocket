@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3240389313559240312}
   - component: {fileID: 551517309236265405}
   - component: {fileID: 8463170937479967144}
-  - component: {fileID: 5737525809499810830}
+  - component: {fileID: 4146637041105935194}
   m_Layer: 0
   m_Name: Defence 3
   m_TagString: Untagged
@@ -86,7 +86,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5737525809499810830
+--- !u!114 &4146637041105935194
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,10 +95,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1059231063914549953}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce4e24da0cb95b149b194036b4555754, type: 3}
+  m_Script: {fileID: 11500000, guid: cbf74b2617ddb5d48bb12d1e39fba5f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   height: 1.5
+  selectedDefence: 2
 --- !u!1 &4710352051222165884
 GameObject:
   m_ObjectHideFlags: 0

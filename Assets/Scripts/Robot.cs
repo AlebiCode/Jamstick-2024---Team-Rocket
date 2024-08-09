@@ -8,9 +8,11 @@ public class Robot : MonoBehaviour
     [SerializeField] private float speed = 4;
 
     private Queue<EnemyBase> targets = new Queue<EnemyBase>();
+    private RobotConstructor robotConstructor = new RobotConstructor();
 
     public float terrainAdvancement;
 
+    private Weapon weapon => robotConstructor.SelectedAttackPart.Weapon;
     public float MyX => transform.position.x;
     public bool IsAlive => hp > 0;
 
@@ -36,6 +38,8 @@ public class Robot : MonoBehaviour
     {
         terrainAdvancement = MyX % TerrainGenerator.TERRAIN_WIDTH;
         OnFirstPlacement();
+        robotConstructor.Spawn(this);
+
     }
     private void OnFirstPlacement()
     {
@@ -59,7 +63,6 @@ public class Robot : MonoBehaviour
         GameManager.TerrainGenerator.GetTerrainAtId(newId - 1).RemoveRobot(this);
         var terrain = GameManager.TerrainGenerator.GetTerrainAtId(newId);
         terrain.AddRobot(this);
-        Debug.Log("Reached " + terrain.TerrainType);
         UpdateSpeed(terrain.TerrainType);
         terrain = GameManager.TerrainGenerator.GetTerrainAtId(newId + GameManager.ENEMYBASE_RANGE - 1);
         if (terrain.HasEnemyBase)
@@ -73,6 +76,7 @@ public class Robot : MonoBehaviour
     {
         targets.Enqueue(enemyBase);
         speed = 0;
+        weapon.enabled = true;
     }
     public void OnTagetLost()
     {

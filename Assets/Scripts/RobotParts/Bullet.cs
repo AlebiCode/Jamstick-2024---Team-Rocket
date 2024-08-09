@@ -32,7 +32,7 @@ public class Bullet : MonoBehaviour
 
     public static void GenerateBullet(int layerMask, Vector3 startPosition, AttacksKeys attackKey) 
     {
-        GameObject bullet = PoolsManager.Instance.GetBulletGameObject(attackKey);
+        GameObject bullet = GameManager.PoolsManager.GetBulletGameObject(attackKey);
         bullet.layer = layerMask;
         bullet.transform.position = startPosition;
         bullet.SetActive(true);

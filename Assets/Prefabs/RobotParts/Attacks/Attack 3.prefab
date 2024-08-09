@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4387843032687913810}
-  - component: {fileID: 3757185579881929763}
+  - component: {fileID: -4254826842590180913}
   - component: {fileID: -6990876432438164549}
   m_Layer: 0
   m_Name: Attack 3
@@ -117,7 +117,7 @@ Transform:
   - {fileID: 7628523901773579200}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3757185579881929763
+--- !u!114 &-4254826842590180913
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,10 +126,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6555309097156330700}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce4e24da0cb95b149b194036b4555754, type: 3}
+  m_Script: {fileID: 11500000, guid: 498440ea584661f4e8eb4f4dea55f312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   height: 1
+  weapon: {fileID: -6990876432438164549}
 --- !u!114 &-6990876432438164549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +138,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6555309097156330700}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e47c51caf9162540a4bf55a61f7e812, type: 3}
   m_Name: 

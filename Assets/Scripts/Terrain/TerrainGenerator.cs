@@ -5,14 +5,16 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
-public class TerrainGenerator : MonoBehaviour
+[System.Serializable]
+public class TerrainGenerator
 {
     public const float TERRAIN_WIDTH = 4;
 
     private const string PATH_PREFABS_TERRAINS = "Prefabs/Terrain/Variants";
-    
-    [SerializeField] private int roadLenght = 5;
+
+    [SerializeField] private Transform parent;
     [SerializeField] private EnemyBase enemyBasePrefab;
+    [SerializeField] private int roadLenght = 5;
 
     private List<Terrain>[] readyTerrains;
     private List<Terrain> activeTerrains = new List<Terrain>();
@@ -22,12 +24,7 @@ public class TerrainGenerator : MonoBehaviour
     private Vector3 NextPosition => activeTerrains.Count > 0 ? NewestTerrain.transform.position + Vector3.right * TERRAIN_WIDTH : Vector3.zero;
     public EnemyBase EnemyBasePrefab => enemyBasePrefab;
 
-    private void Start()
-    {
-        Initialize();
-    }
-
-    private void Initialize()
+    public void Initialize()
     {
         LoadTerrains();
         PlaceFirstTerrains();
@@ -35,7 +32,7 @@ public class TerrainGenerator : MonoBehaviour
     public void Reset()
     {
         for (int i = 0; i < activeTerrains.Count; i++)
-            Destroy(activeTerrains[i].gameObject);
+            UnityEngine.Object.Destroy(activeTerrains[i].gameObject);
         activeTerrains.Clear();
         PlaceFirstTerrains();
     }
@@ -46,7 +43,7 @@ public class TerrainGenerator : MonoBehaviour
         for (int i = 0; i < terrainParents.Length; i++)
         {
             terrainParents[i] = new GameObject().transform;
-            terrainParents[i].SetParent(transform);
+            terrainParents[i].SetParent(parent);
             terrainParents[i].name = ((TerrainType)i).ToString() + "_Terrains";
         }
 
@@ -59,7 +56,7 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int i = 0; i < roadLenght; i++)    //sbagliato! è un fix lezzo per essere sicuro di aver abbastanza pezzi id strada
             {
-                Terrain instance = Instantiate(t, terrainParents[(int)t.TerrainType]);
+                Terrain instance = UnityEngine.Object.Instantiate(t, terrainParents[(int)t.TerrainType]);
                 readyTerrains[(int)instance.TerrainType].Add(instance);
                 instance.gameObject.SetActive(false);
             }
@@ -147,12 +144,18 @@ public class TerrainGenerator : MonoBehaviour
 
 }
 
-[CustomEditor(typeof(TerrainGenerator))]
+/*
+[CustomPropertyDrawer(typeof(TerrainGenerator))]
 [CanEditMultipleObjects]
-public class TerrainGenerator_Inspector : Editor
+public class TerrainGenerator_Inspector : PropertyDrawer
 {
-    private TerrainGenerator TerrainGenerator => (TerrainGenerator)target;
-
+    //private TerrainGenerator TerrainGenerator => (TerrainGenerator)target;
+    
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        base.OnGUI(position, property, label);
+    }
+    
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
@@ -166,4 +169,5 @@ public class TerrainGenerator_Inspector : Editor
         EditorGUI.EndDisabledGroup();
 
     }
-}
+
+}*/

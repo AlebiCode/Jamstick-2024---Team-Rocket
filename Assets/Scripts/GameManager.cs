@@ -12,13 +12,17 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [SerializeField] private CameraController cameraController;
+    [SerializeField] private Factory factory;
     [SerializeField] private TerrainGenerator terrainGenerator;
+    [SerializeField] private PoolsManager poolsManager;
     [SerializeField] private int money = 1000;
 
     private List<Robot> aliveRobots = new List<Robot>();
 
     public static CameraController CameraController => instance.cameraController;
     public static TerrainGenerator TerrainGenerator => instance.terrainGenerator;
+    public static Factory Factory => instance.factory;
+    public static PoolsManager PoolsManager => instance.poolsManager;
 
     private void Awake()
     {
@@ -26,6 +30,12 @@ public class GameManager : MonoBehaviour
             Destroy(this);
         else
             instance = this;
+    }
+
+    private void Start()
+    {
+        terrainGenerator.Initialize();
+        poolsManager.GeneratePools();
     }
 
     public void OnRobotSpawn(Robot robot)
@@ -40,6 +50,14 @@ public class GameManager : MonoBehaviour
     public void Advancement(float x)
     {
         cameraController.SetTargetX(x);
+    }
+
+    public void DestroyAllRobots()
+    {
+        foreach (Robot robot in aliveRobots)
+        {
+            Destroy(robot);
+        }
     }
 
 }
