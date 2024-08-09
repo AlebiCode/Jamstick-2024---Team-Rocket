@@ -8,27 +8,20 @@ using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 public class TerrainGenerator : MonoBehaviour
 {
     public const float TERRAIN_WIDTH = 4;
-    private const string PATH_PREFABS_TERRAINS = "Prefabs/Terrain";
-    
-    public static TerrainGenerator instance;
 
+    private const string PATH_PREFABS_TERRAINS = "Prefabs/Terrain/Variants";
+    
     [SerializeField] private int roadLenght = 5;
+    [SerializeField] private EnemyBase enemyBasePrefab;
 
     private List<Terrain>[] readyTerrains;
     private List<Terrain> activeTerrains = new List<Terrain>();
 
     private Terrain OldestTerrain => activeTerrains[0];
     private Terrain NewestTerrain => activeTerrains[activeTerrains.Count - 1];
-    private Vector3 NextPosition => activeTerrains.Count > 0 ? NewestTerrain.transform.position + Vector3.right * TERRAIN_WIDTH : Vector3.zero /*new Vector3(-((roadLenght - 1) * TERRAIN_WIDTH / 2), 0, 0)*/;
+    private Vector3 NextPosition => activeTerrains.Count > 0 ? NewestTerrain.transform.position + Vector3.right * TERRAIN_WIDTH : Vector3.zero;
+    public EnemyBase EnemyBasePrefab => enemyBasePrefab;
 
-
-    private void Awake()
-    {
-        if (instance)
-            Destroy(this);
-        else
-            instance = this;
-    }
     private void Start()
     {
         Initialize();
@@ -91,7 +84,11 @@ public class TerrainGenerator : MonoBehaviour
 
         newTerrain.transform.position = NextPosition;
         newTerrain.gameObject.SetActive(true);
+        newTerrain.PositionId = activeTerrains.Count;
         activeTerrains.Add(newTerrain);
+
+        if (UnityEngine.Random.Range(0,3) == 0)
+            newTerrain.AddEnemyBase();
     }
     private void RemoveTerrain()
     {
@@ -100,6 +97,8 @@ public class TerrainGenerator : MonoBehaviour
         readyTerrains[(int)toRemove.TerrainType].Add(toRemove);
         toRemove.ResetMe();
         toRemove.gameObject.SetActive(false);
+        for (int i = 0; i < activeTerrains.Count; i++)
+            activeTerrains[i].PositionId--;
     }
     private Terrain RandomRetrieveFromReadied(TerrainType terrainType)
     {
@@ -116,9 +115,35 @@ public class TerrainGenerator : MonoBehaviour
     }
     public Terrain GetTerrainAtX(float x)
     {
-        return activeTerrains[(int)((x - OldestTerrain.transform.position.x) / TERRAIN_WIDTH) + 1];
+        return activeTerrains[GetTerrainIDAtX(x)];
+    }
+    public int GetTerrainIDAtX(float x)
+    {
+        return (int)((x - OldestTerrain.transform.position.x) / TERRAIN_WIDTH);
     }
 
+    public Terrain GetTerrainAtId(int id)
+    {
+        return activeTerrains[id];
+    }
+    public List<Terrain> GetTerrainAtX(float x, int count)
+    {
+        return activeTerrains.GetRange((int)((x - OldestTerrain.transform.position.x) / TERRAIN_WIDTH), count);
+    }
+    public List<Terrain> GetPreviousTerrains(Terrain terrain)
+    {
+        for (int i = 0; i < activeTerrains.Count; i++)
+        {
+            if (activeTerrains[i] == terrain)
+                return activeTerrains.GetRange(0, i + 1);
+        }
+        return new List<Terrain>();
+    }
+
+    public List<Terrain> GetNextTerrains(float xPos, int count)
+    {
+        return activeTerrains.GetRange(GetTerrainIDAtX(xPos), count);
+    }
 
 }
 
