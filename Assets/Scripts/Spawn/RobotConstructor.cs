@@ -40,6 +40,7 @@ public class RobotConstructor : MonoBehaviour
 
         selectedAttackPart.transform.parent = attackSlot;
         selectedAttackPart.transform.localPosition = Vector3.zero;
+        selectedAttackPart.layer = gameObject.layer;
 
         selectedMovementPart.transform.parent = movementSlot;
         selectedMovementPart.transform.localPosition = Vector3.zero;

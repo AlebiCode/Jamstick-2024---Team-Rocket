@@ -12,18 +12,18 @@ public class PoolsManager : MonoBehaviour
     [SerializeField] private GameObject[] defencePrefabs;
     [SerializeField] private GameObject[] movementPrefabs;
 
-    [SerializeField] private List<GameObject> projectileBulletPool = new();
-    [SerializeField] private List<GameObject> explosiveBulletPool = new();
-    [SerializeField] private List<GameObject> energyBulletPool = new();
-    [SerializeField] private List<GameObject> projectilesAttackPool = new();
-    [SerializeField] private List<GameObject> explosivesAttackPool = new();
-    [SerializeField] private List<GameObject> energyAttackPool = new();
-    [SerializeField] private List<GameObject> armorDefencePool = new();
-    [SerializeField] private List<GameObject> foamDefencePool = new();
-    [SerializeField] private List<GameObject> shieldDefencePool = new();
-    [SerializeField] private List<GameObject> pawsMovementPool = new();
-    [SerializeField] private List<GameObject> tracksMovementPool = new();
-    [SerializeField] private List<GameObject> wheelsMovementPool = new();
+    private List<GameObject> projectileBulletPool = new();
+    private List<GameObject> explosiveBulletPool = new();
+    private List<GameObject> energyBulletPool = new();
+    private List<GameObject> projectilesAttackPool = new();
+    private List<GameObject> explosivesAttackPool = new();
+    private List<GameObject> energyAttackPool = new();
+    private List<GameObject> armorDefencePool = new();
+    private List<GameObject> foamDefencePool = new();
+    private List<GameObject> shieldDefencePool = new();
+    private List<GameObject> pawsMovementPool = new();
+    private List<GameObject> tracksMovementPool = new();
+    private List<GameObject> wheelsMovementPool = new();
 
     public static PoolsManager Instance { get; private set; }
 

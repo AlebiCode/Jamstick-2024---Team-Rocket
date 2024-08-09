@@ -19,9 +19,7 @@ public class Weapon : MonoBehaviour
             currentTime -= Time.deltaTime;
             if (currentTime <= 0 && isInRange) 
             {
-                GameObject bullet = PoolsManager.Instance.GetBulletGameObject(attackKey);
-                bullet.transform.position = transform.position;
-                bullet.SetActive(true);
+                Bullet.GenerateBullet(gameObject.layer, transform.position, attackKey);
                 currentTime = reloadTime;
             }
     }
