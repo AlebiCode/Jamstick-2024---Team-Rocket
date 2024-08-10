@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{c4ec65d2-25f2-4691-91d7-3ecf9f13309b}">
+		<property name="assetPath">
+			<value>Music/MusicChillMode.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>102.43904166666667</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{6f655c1c-7a03-4eb3-aa79-ba68cdc4c2cc}</destination>
+		</relationship>
+	</object>
+</objects>

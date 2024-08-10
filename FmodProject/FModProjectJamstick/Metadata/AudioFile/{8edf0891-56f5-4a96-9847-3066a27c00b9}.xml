@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{8edf0891-56f5-4a96-9847-3066a27c00b9}">
+		<property name="assetPath">
+			<value>Robots/RobotDeath3.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>2.2353958333333335</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{6f655c1c-7a03-4eb3-aa79-ba68cdc4c2cc}</destination>
+		</relationship>
+	</object>
+</objects>
