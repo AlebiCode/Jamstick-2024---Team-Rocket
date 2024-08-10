@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AttacksKeys { PROJECTILES, EXPLOSIVES, ENERGY }
+public enum AttacksKeys { PROJECTILES, EXPLOSIVES, ENERGY, TRUE }
 public enum DefencesKeys { ARMOR, FOAM, SHIELDS }
 public enum MovementsKeys { PAWS, TRACKS, WHEELS }
 

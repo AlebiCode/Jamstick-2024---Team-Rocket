@@ -6,26 +6,27 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private float reloadTime;
     [SerializeField] private AttacksKeys attackKey;
     [SerializeField] private bool isInRange;
 
     private float currentTime;
-    private Transform target;
+    public Transform target;
 
+    private float ReloadTime => GameManager.FIRE_RATE;
     public bool HasTarget => target != null;
 
     private void OnEnable()
     {
-        currentTime = reloadTime;
+        currentTime = ReloadTime;
     }
     private void Update()
     {
         currentTime -= Time.deltaTime;
         if (currentTime <= 0 && isInRange) 
         {
+            AimAtTarget();
             Bullet.GenerateBullet(transform, attackKey);
-            currentTime = reloadTime;
+            currentTime = ReloadTime;
         }
     }
 
@@ -41,6 +42,7 @@ public class Weapon : MonoBehaviour
     }
     public void Disengage()
     {
+        target = null;
         enabled = false;
     }
 

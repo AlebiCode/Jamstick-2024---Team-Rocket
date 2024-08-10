@@ -12,8 +12,10 @@ public class Bullet : MonoBehaviour
 
     private float deathTimer;
 
-    public AttacksKeys AttacksKeys => attackKey;
     private static RaycastHit hitInfo;
+    
+    public AttacksKeys AttacksKeys => attackKey;
+    private float Damage => GameManager.BASE_DAMAGE;
 
     private void OnEnable()
     {
@@ -33,7 +35,7 @@ public class Bullet : MonoBehaviour
         length = Time.deltaTime * speed;
         if (Physics.Raycast(transform.position, transform.forward, out hitInfo, length, 1 << GetTargetLayer(gameObject.layer), QueryTriggerInteraction.Collide))
         {
-            //Metodo per danno
+            Impact();
             return;
         }
         transform.position += transform.forward * length;
@@ -49,6 +51,15 @@ public class Bullet : MonoBehaviour
                 return 6;
         }
     }
+    private void Impact()
+    {
+        hitInfo.transform.GetComponentInParent<Entity>().Damage(Damage, attackKey, transform.forward);
+        Pool();
+    }
+    private void Pool()
+    {
+        GameManager.PoolsManager.PoolBullet(this);
+    }
 
     public static void GenerateBullet(Transform origin, AttacksKeys attackKey) 
     {
@@ -57,11 +68,6 @@ public class Bullet : MonoBehaviour
         bullet.transform.position = origin.transform.position;
         bullet.transform.rotation = origin.rotation;
         bullet.SetActive(true);
-    }
-
-    private void Pool()
-    {
-        GameManager.PoolsManager.PoolBullet(this);
     }
 
 }

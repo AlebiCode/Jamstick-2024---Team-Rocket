@@ -30,6 +30,8 @@ public class PoolsManager
     private List<RobotPart> tracksMovementPool = new();
     private List<RobotPart> wheelsMovementPool = new();
 
+    public Transform PoolParent => poolParent;
+
     public void GeneratePools()
     {
         for (int i = 0; i < robotPartsPoolLimit; i++)
@@ -157,7 +159,7 @@ public class PoolsManager
                 return go;
             }
         }
-        RobotPart newInstance = Object.Instantiate(prefab, poolParent);
+        RobotPart newInstance = Object.Instantiate(prefab);
         pool.Add(newInstance);
         return newInstance;
     }

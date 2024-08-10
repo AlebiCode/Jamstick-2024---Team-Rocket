@@ -13,22 +13,22 @@ public class TerrainGenerator
     private const string PATH_PREFABS_TERRAINS = "Prefabs/Terrain/Variants";
 
     [SerializeField] private Transform parent;
-    [SerializeField] private EnemyBase enemyBasePrefab;
     [SerializeField] private int roadLenght = 5;
-    [SerializeField] private int minEnemyDistance = 8;
-    [SerializeField] private float enemyChance = 1;
+    [SerializeField] private int terrainTypeClusterSize = 3;
     [SerializeField] private EnemyBaseGenerator enemyBaseGenerator;
 
     private List<Terrain>[] readyTerrains;
     private List<Terrain> activeTerrains = new List<Terrain>();
     
-    private int currentDistance;
+    private int maxTerrainDistance;
+    private TerrainType currentTypeClusterType;
+    private int currentTypeClusterPlacements = int.MaxValue;
 
     private Terrain OldestTerrain => activeTerrains[0];
     private Terrain NewestTerrain => activeTerrains[activeTerrains.Count - 1];
     private Vector3 NextPosition => activeTerrains.Count > 0 ? NewestTerrain.transform.position + Vector3.right * TERRAIN_WIDTH : Vector3.zero;
-    public EnemyBase EnemyBasePrefab => enemyBasePrefab;
     public EnemyBaseGenerator EnemyBaseGenerator => enemyBaseGenerator;
+    public int MaxTerrainDistance => maxTerrainDistance;
 
     public void Initialize()
     {
@@ -71,28 +71,28 @@ public class TerrainGenerator
     private void PlaceFirstTerrains()
     {
         for (int i = 0; i < roadLenght; i++)
-            AddRandomTypeTerrain();
+            AddTerrain();
     }
 
-    public void AddRandomTypeTerrain()
-    {
-        AddTerrain((TerrainType)UnityEngine.Random.Range(0, (int)TerrainType.ENUM_LENGHT));
-    }
-    private void AddTerrain(TerrainType terrainType)
+
+    private void AddTerrain()
     {
         if (activeTerrains.Count >= roadLenght)
             RemoveTerrain();
 
-        var newTerrain = RandomRetrieveFromReadied(terrainType);
-
+        if (currentTypeClusterPlacements > terrainTypeClusterSize)
+        {
+            currentTypeClusterPlacements = 0;
+            currentTypeClusterType = (TerrainType)UnityEngine.Random.Range(0, (int)TerrainType.ENUM_LENGHT);
+        }
+        maxTerrainDistance++;
+        currentTypeClusterPlacements++;
+        var newTerrain = RetrieveFromReadied(currentTypeClusterType);
         newTerrain.transform.position = NextPosition;
         newTerrain.gameObject.SetActive(true);
         newTerrain.PositionId = activeTerrains.Count;
         activeTerrains.Add(newTerrain);
-        currentDistance++;
-
-        if (currentDistance >= minEnemyDistance && UnityEngine.Random.Range(0, 1) <= enemyChance)
-            newTerrain.AddEnemyBase();
+        newTerrain.TryAddEnemyBase();
     }
     private void RemoveTerrain()
     {
@@ -104,7 +104,7 @@ public class TerrainGenerator
         for (int i = 0; i < activeTerrains.Count; i++)
             activeTerrains[i].PositionId--;
     }
-    private Terrain RandomRetrieveFromReadied(TerrainType terrainType)
+    private Terrain RetrieveFromReadied(TerrainType terrainType)
     {
         int readiedIndex = UnityEngine.Random.Range(0, readyTerrains[(int)terrainType].Count);
         Terrain newTerrain = readyTerrains[(int)terrainType][readiedIndex];
@@ -115,7 +115,7 @@ public class TerrainGenerator
     public void RendererPositionUpdate(float x)
     {
         if (x >= activeTerrains[roadLenght/2].transform.position.x)
-            AddRandomTypeTerrain();
+            AddTerrain();
     }
     public Terrain GetTerrainAtX(float x)
     {

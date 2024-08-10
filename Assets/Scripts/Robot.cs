@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Robot : MonoBehaviour
+public class Robot : Entity
 {
-    [SerializeField] private float hp = 4;
-    [SerializeField] private float speed = 4;
+    private float controlSpeed = 0;
+    private float targetControlSpeed = 1;
+    private float randomControlAcc = 1;
 
-    private Queue<EnemyBase> targets = new Queue<EnemyBase>();
+    private float terrainSpeed = 1;
+
     private RobotConstructor robotConstructor = new RobotConstructor();
 
     public float terrainAdvancement;
@@ -15,54 +17,53 @@ public class Robot : MonoBehaviour
     private Weapon Weapon => robotConstructor.SelectedAttackPart.Weapon;
     private bool HasTarget => Weapon.HasTarget;
     public float MyX => transform.position.x;
-    public bool IsAlive => hp > 0;
 
-    void Start()
-    {
-        Activate();
-    }
+
 
     void Update()
     {
-        if (speed != 0)
+        if (controlSpeed == 0 && targetControlSpeed == 0)
+            return;
+        controlSpeed = Mathf.MoveTowards(controlSpeed, targetControlSpeed, randomControlAcc * Time.deltaTime);
+        float movement = controlSpeed * terrainSpeed * Time.deltaTime;
+        transform.position += Vector3.right * movement;
+        terrainAdvancement += movement;
+        if (terrainAdvancement >= TerrainGenerator.TERRAIN_WIDTH)
         {
-            float movement = speed * Time.deltaTime;
-            transform.position += Vector3.right * movement;
-            terrainAdvancement += movement;
-            if (terrainAdvancement >= TerrainGenerator.TERRAIN_WIDTH)
-            {
-                OnNewTerrainReached();
-                terrainAdvancement -= TerrainGenerator.TERRAIN_WIDTH;
-            }
-            GameManager.instance.Advancement(MyX);
+            OnNewTerrainReached();
+            terrainAdvancement -= TerrainGenerator.TERRAIN_WIDTH;
         }
-        if (HasTarget && speed != 0)
-        {
-            Weapon.AimAtTarget();
-        }
+        GameManager.instance.Advancement(MyX);
     }
-    
-    private void Activate()
+
+    public void Initialize()
+    {
+        robotConstructor.Spawn(this);
+    }
+    public void Activate()
     {
         terrainAdvancement = MyX % TerrainGenerator.TERRAIN_WIDTH;
         OnFirstPlacement();
-        robotConstructor.Spawn(this);
-
+        enabled = true;
+        //RollAccelleration();
     }
     private void OnFirstPlacement()
     {
-        var terrains = GameManager.TerrainGenerator.GetNextTerrains(MyX, GameManager.ENEMYBASE_RANGE);
-        terrains[0].AddRobot(this);
-        UpdateSpeed(terrains[0].TerrainType);
-
-        for (int i = 0; i < terrains.Count; i++)
+        var myId = GameManager.TerrainGenerator.GetTerrainIDAtX(MyX);
+        Terrain t = GameManager.TerrainGenerator.GetTerrainAtId(myId);
+        t.AddRobot(this);
+        UpdateSpeed(t.TerrainType);
+        for (int i = myId; i < myId + GameManager.ENEMYBASE_RANGE; i++)
         {
-            if (!terrains[i].HasEnemyBase)
+            var nextTerrain = GameManager.TerrainGenerator.GetTerrainAtId(i);
+            if (!nextTerrain.HasEnemyBase)
                 continue;
-            if(i < GameManager.ENEMYBASE_RANGE)
-                terrains[i].EnemyBase.OnBotEnteredMyRange(this);
-            if (i < GameManager.ROBOT_RANGE)
-                AquireTarget(terrains[i].EnemyBase);
+            if (i - myId < GameManager.ENEMYBASE_RANGE)
+            {
+                nextTerrain.EnemyBase.OnBotEnteredMyRange(this);
+            }
+            if (i - myId < GameManager.ROBOT_RANGE)
+                TargetCheck(nextTerrain.EnemyBase);
         }
     }
     private void OnNewTerrainReached()
@@ -77,34 +78,115 @@ public class Robot : MonoBehaviour
             terrain.EnemyBase.OnBotEnteredMyRange(this);
         terrain = GameManager.TerrainGenerator.GetTerrainAtId(newId + GameManager.ROBOT_RANGE - 1);
         if (terrain.HasEnemyBase)
-            AquireTarget(terrain.EnemyBase);
+            TargetCheck(terrain.EnemyBase);
     }
 
-    public void AquireTarget(EnemyBase enemyBase)
+    public void TargetCheck(EnemyBase enemyBase)
     {
-        targets.Enqueue(enemyBase);
-        speed = 0;
-        Weapon.EngageTarget(enemyBase.GetClosestEnemy(transform.position.z).transform);
+        if (!enemyBase.HasEnemies)
+            return;
+        BattleStance();
+        AquireTarget(enemyBase);
     }
-    public void OnTagetLost()
+    public void OnTagetLost(EnemyBase enemyBase)
     {
+        if (enemyBase.HasEnemies)
+        {
+            AquireTarget(enemyBase);
+        }
+        else
+        {
+            MovementStance();
+            Weapon.Disengage();
+        }
+    }
+    private void AquireTarget(EnemyBase enemyBase)
+    {
+        if (!IsAlive)
+            return;
+        Enemy target = enemyBase.GetClosestEnemyToZ(transform.position.z);
+        Weapon.EngageTarget(target.transform);
+        target.OnDeath.AddListener(() => OnTagetLost(enemyBase));
+    }
+    private void BattleStance()
+    {
+        targetControlSpeed = 0;
+    }
+    private void MovementStance()
+    {
+        targetControlSpeed = 1;
+        RollAccelleration();
+    }
+
+    protected override void RecieveForce(Vector3 dir)
+    {
+        BoomForceOnDebris(robotConstructor.SelectedAttackPart.Rigidbody);
+        BoomForceOnDebris(robotConstructor.SelectedDefencePart.Rigidbody);
+        BoomForceOnDebris(robotConstructor.SelectedMovementPart.Rigidbody);
+    }
+    private void BoomForceOnDebris(Rigidbody targetRb)
+    {
+        targetRb.AddExplosionForce(1, transform.position + new Vector3(Random.Range(-0.33f, 0.33f), Random.Range(-0.33f, 0.33f)), 1);
+    }
+
+    protected override float ApplyDamageModifiers(float damage, AttacksKeys atkKey)
+    {
+        return damage * GameManager.GetDamageMultiplier(atkKey, robotConstructor.SelectedDefencePart.selectedDefence);
+    }
+    protected override void Death()
+    {
+        GameManager.TerrainGenerator.GetTerrainAtX(MyX).RemoveRobot(this);
+        base.Death();
         Weapon.Disengage();
-        targets.Dequeue();
+        enabled = false;
+        robotConstructor.EnablePhysics();
+        StartCoroutine(Despawner());
     }
 
+    private IEnumerator Despawner()
+    {
+        yield return new WaitForSeconds(5);
+        robotConstructor.Despawn();
+        Destroy(this);
+    }
+
+    private void RollAccelleration()
+    {
+        randomControlAcc = Random.Range(0.5f, 1.5f);
+    }
     private void UpdateSpeed(TerrainType terrainType)
     {
-        switch (terrainType)
+        terrainSpeed = GetSpeed(terrainType);
+    }
+    private float GetSpeed(TerrainType terrainType)
+    {
+        switch (robotConstructor.SelectedMovementPart.selectedMovement)
         {
-            case TerrainType.road:
-                speed = 4;
-                break;
-            case TerrainType.grass:
-                speed = 2;
-                break;
-            case TerrainType.mud:
-                speed = 1;
-                break;
+            default:
+            case MovementsKeys.PAWS:
+                switch (terrainType)
+                {
+                    default:
+                    case TerrainType.grass: return GameManager.HIGH_BOT_SPEED; 
+                    case TerrainType.road: return GameManager.MID_BOT_SPEED; 
+                    case TerrainType.mud: return GameManager.LOW_BOT_SPEED; 
+                }
+            case MovementsKeys.TRACKS:
+                switch (terrainType)
+                {
+                    default:
+                    case TerrainType.mud: return GameManager.HIGH_BOT_SPEED;
+                    case TerrainType.grass: return GameManager.MID_BOT_SPEED;
+                    case TerrainType.road: return GameManager.LOW_BOT_SPEED;
+                }
+            case MovementsKeys.WHEELS:
+                switch (terrainType)
+                {
+                    default:
+                    case TerrainType.road: return GameManager.HIGH_BOT_SPEED;
+                    case TerrainType.mud: return GameManager.MID_BOT_SPEED;
+                    case TerrainType.grass: return GameManager.LOW_BOT_SPEED;
+                }
         }
     }
 

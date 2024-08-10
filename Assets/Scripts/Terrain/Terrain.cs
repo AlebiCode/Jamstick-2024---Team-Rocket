@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.Universal;
 
 public enum TerrainType { grass, mud, road, ENUM_LENGHT }
 
@@ -10,10 +11,11 @@ public class Terrain : MonoBehaviour
     [SerializeField] private TerrainType type;
     [SerializeField] private Transform enemyBaseSocket;
 
-    private int myPositionId;
+    public int myPositionId;
     private EnemyBase enemyBase;
     public List<Robot> robots = new List<Robot>();
 
+    public bool HasBots => robots.Count > 0;
     public bool HasEnemyBase => enemyBase;
     public EnemyBase EnemyBase => enemyBase;
     public int PositionId { set { myPositionId = value; } get { return myPositionId; } }
@@ -25,9 +27,9 @@ public class Terrain : MonoBehaviour
         robots.Clear();
     }
 
-    public void AddEnemyBase()
+    public void TryAddEnemyBase()
     {
-        enemyBase = GameManager.TerrainGenerator.EnemyBaseGenerator.GenerateBase(enemyBaseSocket, this);
+        enemyBase = GameManager.TerrainGenerator.EnemyBaseGenerator.TryGenerateBase(enemyBaseSocket, this);
     }
 
     public void AddRobot(Robot robot)
@@ -52,6 +54,10 @@ public class Terrain : MonoBehaviour
             furthestId = i;
         }
         return furthestId >= 0 ? robots[furthestId] : null;
+    }
+    public Robot GetClosestRobotToZ(float z)
+    {
+        return GameManager.GetClosestToZ(robots, z);
     }
 
 }
