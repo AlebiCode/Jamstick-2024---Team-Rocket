@@ -7,7 +7,7 @@ using static UnityEngine.GraphicsBuffer;
 public class Weapon : MonoBehaviour
 {
     [SerializeField] private AttacksKeys attackKey;
-    [SerializeField] private bool isInRange;
+    [SerializeField] private Transform muzzlePosition;
 
     private float currentTime;
     public Transform target;
@@ -22,18 +22,18 @@ public class Weapon : MonoBehaviour
     private void Update()
     {
         currentTime -= Time.deltaTime;
-        if (currentTime <= 0 && isInRange) 
+        if (currentTime <= 0) 
         {
             AimAtTarget();
-            Bullet.GenerateBullet(transform, attackKey);
+            Bullet.GenerateBullet(muzzlePosition.transform, attackKey);
             currentTime = ReloadTime;
         }
     }
 
-    public void EngageTarget(Transform target)
+    public void EngageTarget(Entity target)
     {
         enabled = true;
-        this.target = target;
+        this.target = target.AimAtMePoint;
         AimAtTarget();
     }
     public void AimAtTarget()
@@ -46,8 +46,4 @@ public class Weapon : MonoBehaviour
         enabled = false;
     }
 
-    public void SetInRange(bool isInRange) 
-    {
-        this.isInRange = isInRange;
-    }
 }

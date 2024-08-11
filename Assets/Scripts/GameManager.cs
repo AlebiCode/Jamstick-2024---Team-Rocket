@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     public const float MID_BOT_SPEED = BASE_BOT_SPEED * 1f;
     public const float LOW_BOT_SPEED = BASE_BOT_SPEED * 0.67f;
 
+    public const float BOT_DEATH_FORCE = 10f;
+
     public static GameManager instance;
 
     [SerializeField] private CameraController cameraController;
@@ -29,6 +31,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TerrainGenerator terrainGenerator;
     [SerializeField] private PoolsManager poolsManager;
     [SerializeField] private int money = 1000;
+    [SerializeField] private UnityEvent<int> onMoneyChange;
 
     private List<Robot> aliveRobots = new List<Robot>();
 
@@ -36,6 +39,15 @@ public class GameManager : MonoBehaviour
     public static TerrainGenerator TerrainGenerator => instance.terrainGenerator;
     public static Factory Factory => instance.factory;
     public static PoolsManager PoolsManager => instance.poolsManager;
+
+    private int Money
+    {
+        get { return money; }
+        set {
+            money = value;
+            onMoneyChange.Invoke(money);
+        }
+    }
 
     private void Awake()
     {
@@ -66,12 +78,12 @@ public class GameManager : MonoBehaviour
     }
     public void AddMoney(int quantity)
     {
-        money += quantity;
+        Money += quantity;
     }
     public int TryBuyRobots(int quantity)
     {
-        int purchases = Mathf.Min(money / ROBOT_COST, quantity);
-        money -= purchases * ROBOT_COST;
+        int purchases = Mathf.Min(Money / ROBOT_COST, quantity);
+        Money -= purchases * ROBOT_COST;
         return purchases;
     }
 

@@ -3,7 +3,12 @@ guid: d270a0c9574465f4189f333037b72634
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rocket_Proiettile.Mat
+    second: {fileID: 2100000, guid: ba3f5664bdc7750459f4634cbb07e036, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

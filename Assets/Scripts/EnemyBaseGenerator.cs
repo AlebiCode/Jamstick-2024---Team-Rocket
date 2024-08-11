@@ -6,7 +6,7 @@ using UnityEngine;
 public class EnemyBaseGenerator
 {
     [SerializeField] private EnemyBase enemyBasePrefab;
-    [SerializeField] private Enemy enemyDudePrefab;
+    [SerializeField] private Enemy[] enemyDudePrefabs;
     [SerializeField] private Weapon enemyProjectileWeaponPrefab;
     [SerializeField] private Weapon enemyExplosiveWeaponPrefab;
     [SerializeField] private Weapon enemyEnergyWeaponPrefab;
@@ -19,9 +19,8 @@ public class EnemyBaseGenerator
 
     private int maxAtLastGeneratedBase;
 
-    public Enemy EnemyDudePrefab => enemyDudePrefab;
+    public Enemy[] EnemyDudePrefabs => enemyDudePrefabs;
 
-    public Enemy EnemyPerfab => enemyDudePrefab;
     public Transform EnemyDudeParent => enemyDudeParent;
 
     public EnemyBase TryGenerateBase(Transform parent, Terrain t)
@@ -33,7 +32,7 @@ public class EnemyBaseGenerator
         maxAtLastGeneratedBase = GameManager.TerrainGenerator.MaxTerrainDistance;
         EnemyBase enemyBase = Object.Instantiate(enemyBasePrefab, parent, true);
         enemyBase.transform.localPosition = Vector3.zero;
-        enemyBase.Initialize(t, Random.Range(minEnemies, maxEnemies + 1), GetWeaponPrefab((AttacksKeys)Random.Range(0,3)), (DefencesKeys)Random.Range(0, 3));
+        enemyBase.Initialize(t, GetRandomEnemy(), Random.Range(minEnemies, maxEnemies + 1));
         return enemyBase;
     }
 
@@ -47,6 +46,9 @@ public class EnemyBaseGenerator
             case AttacksKeys.ENERGY: return enemyEnergyWeaponPrefab;
         }
     }
-
+    private Enemy GetRandomEnemy()
+    {
+        return GameManager.TerrainGenerator.EnemyBaseGenerator.EnemyDudePrefabs[Random.Range(0,3)];
+    }
 
 }

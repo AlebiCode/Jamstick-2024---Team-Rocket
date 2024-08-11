@@ -6,7 +6,7 @@ public class KillZone : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        var r = other.transform.GetComponent<Robot>();
+        var r = other.transform.parent.GetComponent<Robot>();
         if (!r.enabled)
             return;
         r.Kill();

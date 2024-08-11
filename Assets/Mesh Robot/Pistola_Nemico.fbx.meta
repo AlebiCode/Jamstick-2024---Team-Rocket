@@ -3,7 +3,12 @@ guid: b41072961027c0c4d9d69731bcc9f623
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistola_Nemico.Mat
+    second: {fileID: 2100000, guid: c6874a03e9d4bee4bab4064655a45577, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

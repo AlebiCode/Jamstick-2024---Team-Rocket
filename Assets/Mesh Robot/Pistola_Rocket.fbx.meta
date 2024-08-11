@@ -3,7 +3,12 @@ guid: 3b68830f730379145af2067b37d9f675
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pistola_Rocket.Mat
+    second: {fileID: 2100000, guid: 7af3ddc405d48e4499123fd87611bf10, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

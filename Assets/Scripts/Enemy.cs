@@ -6,23 +6,22 @@ using UnityEngine.Events;
 public class Enemy : Entity
 {
     [SerializeField] private Transform weaponSocket;
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Collider myHitCollider;
+    [SerializeField] private RagdollUser ragdollUser;
+    [SerializeField] private Weapon weapon;
+    [SerializeField] private DefencesKeys myDefence;
 
-    private Weapon weapon;
-    private DefencesKeys myDefence;
 
     public Weapon Weapon => weapon;
     public bool HasTarget => weapon.HasTarget;
 
-    public void Initialize(Weapon weapon, DefencesKeys defencesKey)
+    public void Initialize()
     {
-        this.weapon = weapon;
+        transform.rotation = Quaternion.Euler(0, -90, 0);
+        //this.weapon = weapon;
         weapon.transform.SetParent(weaponSocket);
-        weapon.transform.localPosition = Vector3.zero;
+        //weapon.transform.localPosition = Vector3.zero;
         weapon.gameObject.layer = gameObject.layer;
-        myDefence = defencesKey;
-
-        rb.isKinematic = true;
     }
 
     public void FindTarget(Terrain terrain)
@@ -35,7 +34,7 @@ public class Enemy : Entity
             if (t.HasBots)
             {
                 Robot r = t.GetClosestRobotToZ(transform.position.z);
-                weapon.EngageTarget(r.transform);
+                weapon.EngageTarget(r);
                 r.OnDeath.AddListener(() => FindTarget(terrain));
                 return;
             }
@@ -45,7 +44,7 @@ public class Enemy : Entity
 
     protected override void RecieveForce(Vector3 dir)
     {
-        rb.AddForce(dir, ForceMode.Impulse);
+        //rb.AddForce(dir, ForceMode.Impulse);
     }
 
     protected override float ApplyDamageModifiers(float damage, AttacksKeys atkKey)
@@ -60,7 +59,9 @@ public class Enemy : Entity
         Weapon.Disengage();
         Weapon.transform.SetParent(null);
         Weapon.transform.GetComponent<Rigidbody>().isKinematic = false;
-        rb.isKinematic = false;
+        ragdollUser.SetActivation(true);
+        ragdollUser.Impulse(new Vector3(1, Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
+        myHitCollider.enabled = false;
         GameManager.instance.AddMoney(GameManager.SINGLE_ENEMY_LOOT);
         StartCoroutine(DestroyCo());
     }

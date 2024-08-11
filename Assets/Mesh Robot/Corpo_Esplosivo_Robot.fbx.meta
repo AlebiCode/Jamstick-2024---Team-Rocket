@@ -3,7 +3,12 @@ guid: 02fc07e8f103bc3448770d26d1eadcbd
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Corpo_Esplosivo_Robot.Mat
+    second: {fileID: 2100000, guid: 549c3e8fe23b2c34d8346d8504c96956, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

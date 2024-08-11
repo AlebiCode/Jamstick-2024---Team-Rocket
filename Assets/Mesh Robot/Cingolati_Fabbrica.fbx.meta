@@ -3,7 +3,12 @@ guid: 474869236b2c02f43978158015de0ae0
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cingolati_Fabbrica.Mat.001
+    second: {fileID: 2100000, guid: 7048a16e586eda24ca2d3d34521092b1, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

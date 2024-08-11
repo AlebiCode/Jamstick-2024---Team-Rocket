@@ -3,7 +3,12 @@ guid: d8c0c342e81a7ef459ecb1e810be2b21
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Corpo_Laser_Robot.Mat
+    second: {fileID: 2100000, guid: 8c27934898bd5c14bbd0421b4645ba58, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -3,7 +3,12 @@ guid: c8dd926a9c8b37a4ba8eab07406ab4d0
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Gambe_Robot.Mat
+    second: {fileID: 2100000, guid: 07998d36ccb72954eb158acaf71fd243, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

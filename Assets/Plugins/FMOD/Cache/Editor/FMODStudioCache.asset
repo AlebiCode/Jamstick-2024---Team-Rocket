@@ -15,7 +15,7 @@ MonoBehaviour:
   Path: FmodProject/FModProjectJamstick/Build/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 638589293836389052
+  lastModified: 638589671375206926
   FileSizes:
   - Name: Desktop
     Value: 5058816
@@ -215,7 +215,7 @@ MonoBehaviour:
   - {fileID: 4686720985788358182}
   StringsBanks:
   - {fileID: 846690139329249390}
-  cacheTime: 638589293836418956
+  cacheTime: 638589671375256892
   cacheVersion: 131617
 --- !u!114 &394534087315428493
 MonoBehaviour:
@@ -259,10 +259,10 @@ MonoBehaviour:
   Path: FmodProject/FModProjectJamstick/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638589293836136081
+  lastModified: 638589671374574231
   FileSizes:
   - Name: Desktop
-    Value: 1334
+    Value: 1466
   Exists: 1
 --- !u!114 &1277610163233249966
 MonoBehaviour:
@@ -333,10 +333,10 @@ MonoBehaviour:
   Path: FmodProject/FModProjectJamstick/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638589293836126115
+  lastModified: 638589671374564254
   FileSizes:
   - Name: Desktop
-    Value: 1036
+    Value: 1486
   Exists: 1
 --- !u!114 &6820374214071765122
 MonoBehaviour:
@@ -380,7 +380,7 @@ MonoBehaviour:
   Path: FmodProject/FModProjectJamstick/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638589293836418956
+  lastModified: 638589671375256892
   FileSizes:
   - Name: Desktop
     Value: 450016

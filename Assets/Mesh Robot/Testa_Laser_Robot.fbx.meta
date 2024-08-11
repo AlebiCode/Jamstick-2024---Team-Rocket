@@ -3,7 +3,12 @@ guid: d4f3ca07eb1057b4d99cfd2b1d9dcc2c
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Testa_Laser_Robot.mat
+    second: {fileID: 2100000, guid: b1e56a9227219e148a4dbc364226ab28, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

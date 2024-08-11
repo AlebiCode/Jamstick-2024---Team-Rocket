@@ -3,7 +3,12 @@ guid: 7ce2be569a32c984ebd2a0835a8e8663
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Testa_proiettili_Robot.Mat
+    second: {fileID: 2100000, guid: 1cf05883c5d4da544ab48a2753ec350b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -105,7 +105,7 @@ public class Robot : Entity
         if (!IsAlive)
             return;
         Enemy target = enemyBase.GetClosestEnemyToZ(transform.position.z);
-        Weapon.EngageTarget(target.transform);
+        Weapon.EngageTarget(target);
         target.OnDeath.AddListener(() => OnTagetLost(enemyBase));
     }
     private void BattleStance()
@@ -126,7 +126,7 @@ public class Robot : Entity
     }
     private void BoomForceOnDebris(Rigidbody targetRb)
     {
-        targetRb.AddExplosionForce(1, transform.position + new Vector3(Random.Range(-0.33f, 0.33f), Random.Range(-0.33f, 0.33f)), 1);
+        targetRb.AddForceAtPosition(Vector3.left * GameManager.BOT_DEATH_FORCE, new Vector3(0, Random.Range(-0.33f, 0.33f), Random.Range(-0.33f, 0.33f)), ForceMode.Impulse);
     }
 
     protected override float ApplyDamageModifiers(float damage, AttacksKeys atkKey)
@@ -147,7 +147,7 @@ public class Robot : Entity
     {
         yield return new WaitForSeconds(5);
         robotConstructor.Despawn();
-        Destroy(this);
+        Destroy(gameObject);
     }
 
     private void RollAccelleration()

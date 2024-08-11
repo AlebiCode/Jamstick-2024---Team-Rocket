@@ -3,7 +3,12 @@ guid: ef0bb30afbef6a14d97a978fc9c5552c
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Ruota_Robot.Mat
+    second: {fileID: 2100000, guid: 63455a5cb9bb664488df38cfc36a50de, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

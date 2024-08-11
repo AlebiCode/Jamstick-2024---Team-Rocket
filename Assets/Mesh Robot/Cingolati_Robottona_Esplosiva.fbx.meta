@@ -3,7 +3,12 @@ guid: a304f7f83422f234bb980f423ceabc3a
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cingolati_Robottona_Esplosiva
+    second: {fileID: 2100000, guid: 63df03096f1b5454a9fc80aed05d91c2, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

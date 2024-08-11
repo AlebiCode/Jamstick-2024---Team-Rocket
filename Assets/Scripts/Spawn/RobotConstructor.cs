@@ -26,20 +26,22 @@ public class RobotConstructor
         selectedMovementPart.gameObject.layer = 6;
         selectedMovementPart.transform.localPosition = new Vector3(0, selectedMovementPart.HalfHeight);
         //selectedMovementPart.transform.rotation = Quaternion.LookRotation(Vector3.right, Vector3.up);
-        selectedMovementPart.transform.rotation = Quaternion.Euler(Vector3.zero);
+        selectedMovementPart.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
         selectedDefencePart.transform.SetParent(robot.transform);
         selectedDefencePart.gameObject.layer = 6;
         selectedDefencePart.transform.localPosition = new Vector3(0, selectedMovementPart.Height + selectedDefencePart.HalfHeight);
         //selectedDefencePart.transform.rotation = Quaternion.LookRotation(Vector3.right, Vector3.up);
-        selectedDefencePart.transform.rotation = Quaternion.Euler(Vector3.zero);
+        selectedDefencePart.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
         selectedAttackPart.transform.SetParent(robot.transform);
         selectedAttackPart.gameObject.layer = 6;
         selectedAttackPart.transform.localPosition = new Vector3(0, selectedMovementPart.Height + selectedDefencePart.Height + selectedAttackPart.HalfHeight);
         selectedAttackPart.gameObject.layer = robot.gameObject.layer;
         //selectedAttackPart.transform.rotation = Quaternion.LookRotation(Vector3.right, Vector3.up);
-        selectedAttackPart.transform.rotation = Quaternion.Euler(Vector3.zero);
+        selectedAttackPart.transform.localRotation = Quaternion.Euler(Vector3.zero);
+
+        robot.SetTraget(selectedDefencePart.transform);
     }
 
     public void Despawn()

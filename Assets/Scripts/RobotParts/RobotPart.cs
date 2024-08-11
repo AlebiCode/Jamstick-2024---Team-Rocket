@@ -11,4 +11,10 @@ public class RobotPart : MonoBehaviour
     public float HalfHeight => coll.bounds.extents.y;
     public Rigidbody Rigidbody => rb;
     public Collider Collider => coll;
+
+    public void Push(Vector3 point, Vector3 force)
+    {
+        rb.AddForceAtPosition(point, force);
+    }
+
 }
