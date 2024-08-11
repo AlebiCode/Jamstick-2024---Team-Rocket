@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TerrainGenerator terrainGenerator;
     [SerializeField] private PoolsManager poolsManager;
     [SerializeField] private int money = 1000;
+    [SerializeField] private TMP_Text moneyText;
     [SerializeField] private UnityEvent<int> onMoneyChange;
 
     private List<Robot> aliveRobots = new List<Robot>();
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour
         get { return money; }
         set {
             money = value;
+            moneyText.text = value.ToString();
             onMoneyChange.Invoke(money);
         }
     }
@@ -61,6 +64,7 @@ public class GameManager : MonoBehaviour
     {
         terrainGenerator.Initialize();
         poolsManager.GeneratePools();
+        Money = money;
     }
 
     public void OnRobotSpawn(Robot robot)
