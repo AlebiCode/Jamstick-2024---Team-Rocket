@@ -19,20 +19,20 @@ public class EnemyBase : MonoBehaviour
 
     private Coroutine waitForTargeting;
 
-    public void Initialize(Terrain terrain, Enemy enemyPrefab, int nEnemies)
+    public void Initialize(Terrain terrain, Enemy enemyPrefab, Weapon weaponPrefab, int nEnemies)
     {
         myTerrain = terrain;
-        SpawnEnemies(enemyPrefab, nEnemies);
+        SpawnEnemies(enemyPrefab, weaponPrefab, nEnemies);
     }
 
-    private void SpawnEnemies(Enemy enemyPrefab, int quantity)
+    private void SpawnEnemies(Enemy enemyPrefab, Weapon weaponPrefab, int quantity)
     {
         float minZPos = -(quantity - 1) * Z_OFFSET / 2;
         for (int i = 0; i < quantity; i++)
         {
             var enemy = Instantiate(enemyPrefab, GameManager.TerrainGenerator.EnemyBaseGenerator.EnemyDudeParent);
             enemy.transform.position = transform.position + new Vector3(Random.Range(-X_SPAWN_RANDOMNESS, X_SPAWN_RANDOMNESS), 0, minZPos + Z_OFFSET * i);
-            enemy.Initialize();
+            enemy.Initialize(Instantiate(weaponPrefab));
             enemy.OnDeath.AddListener(() => OnEnemyDeath(enemy));
             enemies.Add(enemy);
         }

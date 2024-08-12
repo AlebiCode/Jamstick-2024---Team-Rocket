@@ -6,8 +6,8 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private AttacksKeys attackKey;
-    [SerializeField] private Transform muzzlePosition;
+    [SerializeField] protected AttacksKeys attackKey;
+    [SerializeField] protected Transform muzzlePosition;
 
     private float currentTime;
     public Transform target;
@@ -25,9 +25,14 @@ public class Weapon : MonoBehaviour
         if (currentTime <= 0) 
         {
             AimAtTarget();
-            Bullet.GenerateBullet(muzzlePosition.transform, attackKey);
+            Attack();
             currentTime = ReloadTime;
         }
+    }
+
+    protected virtual void Attack()
+    {
+        Bullet.GenerateBullet(muzzlePosition.transform, attackKey);
     }
 
     public void EngageTarget(Entity target)

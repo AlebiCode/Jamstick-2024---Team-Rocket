@@ -36,10 +36,10 @@ public class EnemyBaseGenerator
         maxAtLastGeneratedBase = GameManager.TerrainGenerator.MaxTerrainDistance;
         EnemyBase enemyBase = Object.Instantiate(enemyBasePrefab, parent, true);
         enemyBase.transform.localPosition = Vector3.zero;
-        enemyBase.Initialize(t, GetRandomEnemy(), Random.Range(minEnemies, maxEnemies + 1));
+        enemyBase.Initialize(t, GetRandomEnemy(), GetWeaponPrefab((AttacksKeys)Random.Range(0,3)), Random.Range(minEnemies, maxEnemies + 1));
 
         if(!dangerLine.activeInHierarchy)
-            PositionDangerLine(enemyBase.transform);
+            PositionDangerLine(t.transform);
         return enemyBase;
     }
 

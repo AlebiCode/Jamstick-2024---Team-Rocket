@@ -8,18 +8,19 @@ public class Enemy : Entity
     [SerializeField] private Transform weaponSocket;
     [SerializeField] private Collider myHitCollider;
     [SerializeField] private RagdollUser ragdollUser;
-    [SerializeField] private Weapon weapon;
     [SerializeField] private DefencesKeys myDefence;
 
 
+    private Weapon weapon;
+    
     public Weapon Weapon => weapon;
     public bool HasTarget => weapon.HasTarget;
 
-    public void Initialize()
+    public void Initialize(Weapon weapon)
     {
         transform.rotation = Quaternion.Euler(0, -90, 0);
-        //this.weapon = weapon;
-        weapon.transform.SetParent(weaponSocket);
+        this.weapon = weapon;
+        weapon.transform.SetParent(weaponSocket, false);
         //weapon.transform.localPosition = Vector3.zero;
         weapon.gameObject.layer = gameObject.layer;
     }
@@ -58,7 +59,9 @@ public class Enemy : Entity
         Weapon.gameObject.layer = 0;
         Weapon.Disengage();
         Weapon.transform.SetParent(null);
-        Weapon.transform.GetComponent<Rigidbody>().isKinematic = false;
+        var col = Weapon.transform.GetComponent<Collider>();
+        col.enabled = true;
+        col.attachedRigidbody.isKinematic = false;
         ragdollUser.SetActivation(true);
         ragdollUser.Impulse(new Vector3(1, Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
         myHitCollider.enabled = false;

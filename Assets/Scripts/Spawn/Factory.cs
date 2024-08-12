@@ -12,6 +12,7 @@ public class Factory : MonoBehaviour
     [SerializeField] private Transform parent;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Robot robotPrefab;
+    [SerializeField] private Animator head;
     [SerializeField] private int spawnNumber;
     [SerializeField] private float spawnCoolDown;
     [SerializeField] private Loadout loadout = new Loadout();
@@ -86,6 +87,7 @@ public class Factory : MonoBehaviour
         enabled = value;
         productionButtonText.text = value ? "Stop Production" : "Start Production";
         productionButtonText.color = value ? Color.red : Color.green;
+        head.SetBool("Active", value);
     }
     public void SetAttack(int keyIndex)
     {

@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text moneyText;
     [SerializeField] private int money = 1000;
     [SerializeField] private UnityEvent<int> onMoneyChange;
+    [SerializeField] private UnityEvent onGameOver;
 
     public List<Robot> aliveRobots = new List<Robot>();
     private static Coroutine gameOverCo;
@@ -156,6 +157,16 @@ public class GameManager : MonoBehaviour
                     case DefencesKeys.FOAM: return MID_DAMAGE_MULT;
                     case DefencesKeys.SHIELDS: return LOW_DAMAGE_MULT;
                 }
+        }
+    }
+    public static int GetTargetLayer(int myLayer)
+    {
+        switch (myLayer)
+        {
+            case 6:
+                return 7;
+            default:
+                return 6;
         }
     }
 

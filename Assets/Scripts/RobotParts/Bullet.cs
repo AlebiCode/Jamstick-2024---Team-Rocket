@@ -33,23 +33,12 @@ public class Bullet : MonoBehaviour
         }
 
         length = Time.deltaTime * speed;
-        if (Physics.Raycast(transform.position, transform.forward, out hitInfo, length, 1 << GetTargetLayer(gameObject.layer), QueryTriggerInteraction.Collide))
+        if (Physics.Raycast(transform.position, transform.forward, out hitInfo, length, 1 << GameManager.GetTargetLayer(gameObject.layer), QueryTriggerInteraction.Collide))
         {
             Impact();
             return;
         }
         transform.position += transform.forward * length;
-    }
-
-    public static int GetTargetLayer(int myLayer) 
-    { 
-        switch (myLayer) 
-        {
-            case 6:
-                return 7;
-            default: 
-                return 6;
-        }
     }
     private void Impact()
     {
