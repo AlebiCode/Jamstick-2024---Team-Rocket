@@ -47,6 +47,7 @@ public class Factory : MonoBehaviour
             robot.enabled = false;
             currentZOffset += zOffset;
             spawned.Add(robot);
+            GameManager.instance.OnRobotSpawn(robot);
             robot.Initialize();
         }
         if(toSpawn > 0)

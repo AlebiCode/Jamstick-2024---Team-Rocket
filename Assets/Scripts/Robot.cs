@@ -140,6 +140,7 @@ public class Robot : Entity
         Weapon.Disengage();
         enabled = false;
         robotConstructor.EnablePhysics();
+        GameManager.instance.OnRobotDeath(this);
         StartCoroutine(Despawner());
     }
 

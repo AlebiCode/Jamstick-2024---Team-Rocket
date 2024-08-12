@@ -14,7 +14,8 @@ public class TerrainGenerator
 
     [SerializeField] private Transform parent;
     [SerializeField] private int roadLenght = 5;
-    [SerializeField] private int terrainTypeClusterSize = 3;
+    [SerializeField] private int terrainTypeClusterMinSize = 3;
+    [SerializeField] private int terrainTypeClusterMaxSize = 5;
     [SerializeField] private EnemyBaseGenerator enemyBaseGenerator;
 
     private List<Terrain>[] readyTerrains;
@@ -22,7 +23,7 @@ public class TerrainGenerator
     
     private int maxTerrainDistance;
     private TerrainType currentTypeClusterType;
-    private int currentTypeClusterPlacements = int.MaxValue;
+    private int currentTypeClusterRemainingPlacements = 0;
 
     private Terrain OldestTerrain => activeTerrains[0];
     private Terrain NewestTerrain => activeTerrains[activeTerrains.Count - 1];
@@ -80,13 +81,13 @@ public class TerrainGenerator
         if (activeTerrains.Count >= roadLenght)
             RemoveTerrain();
 
-        if (currentTypeClusterPlacements > terrainTypeClusterSize)
+        if (currentTypeClusterRemainingPlacements == 0)
         {
-            currentTypeClusterPlacements = 0;
+            currentTypeClusterRemainingPlacements = UnityEngine.Random.Range(terrainTypeClusterMinSize, terrainTypeClusterMaxSize + 1);
             currentTypeClusterType = (TerrainType)UnityEngine.Random.Range(0, (int)TerrainType.ENUM_LENGHT);
         }
         maxTerrainDistance++;
-        currentTypeClusterPlacements++;
+        currentTypeClusterRemainingPlacements--;
         var newTerrain = RetrieveFromReadied(currentTypeClusterType);
         newTerrain.transform.position = NextPosition;
         newTerrain.gameObject.SetActive(true);

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEngine.Rendering.DebugUI;
 
 public class GameManager : MonoBehaviour
 {
     public const int ROBOT_RANGE = 2;
-    public const int ENEMYBASE_RANGE = 3;
+    public const int ENEMYBASE_RANGE = 4;
 
     public const int ROBOT_COST = 50;
     public const int SINGLE_ENEMY_LOOT = 50;
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour
     public const float LOW_BOT_SPEED = BASE_BOT_SPEED * 0.67f;
 
     public const float BOT_DEATH_FORCE = 10f;
+    public const float TIME_TO_GAMEOVER = 5f;
 
     public static GameManager instance;
 
@@ -33,22 +35,27 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PoolsManager poolsManager;
     [SerializeField] private int money = 1000;
     [SerializeField] private TMP_Text moneyText;
+    [SerializeField] private TMP_Text productionButtonText;
     [SerializeField] private UnityEvent<int> onMoneyChange;
 
-    private List<Robot> aliveRobots = new List<Robot>();
+    public List<Robot> aliveRobots = new List<Robot>();
+    private static Coroutine gameOverCo;
 
     public static CameraController CameraController => instance.cameraController;
     public static TerrainGenerator TerrainGenerator => instance.terrainGenerator;
     public static Factory Factory => instance.factory;
     public static PoolsManager PoolsManager => instance.poolsManager;
 
+    private bool GameOverCondition => aliveRobots.Count <= 0 && Money < ROBOT_COST;
+
     private int Money
     {
         get { return money; }
         set {
             money = value;
-            moneyText.text = value.ToString();
+            GameOverCheck();
             onMoneyChange.Invoke(money);
+            moneyText.text = value.ToString();
         }
     }
 
@@ -64,16 +71,19 @@ public class GameManager : MonoBehaviour
     {
         terrainGenerator.Initialize();
         poolsManager.GeneratePools();
-        Money = money;
+        moneyText.text = Money.ToString();
+        SetProductionState();
     }
 
     public void OnRobotSpawn(Robot robot)
     {
         aliveRobots.Add(robot);
+        GameOverCheck();
     }
     public void OnRobotDeath(Robot robot)
     {
         aliveRobots.Remove(robot);
+        GameOverCheck();
     }
 
     public void Advancement(float x)
@@ -87,6 +97,8 @@ public class GameManager : MonoBehaviour
     public int TryBuyRobots(int quantity)
     {
         int purchases = Mathf.Min(Money / ROBOT_COST, quantity);
+        if (purchases <= 0)
+            return 0;
         Money -= purchases * ROBOT_COST;
         return purchases;
     }
@@ -146,6 +158,35 @@ public class GameManager : MonoBehaviour
                     case DefencesKeys.SHIELDS: return HIGH_DAMAGE_MULT;
                 }
         }
+    }
+
+    public void SetProductionState()
+    {
+        factory.enabled = !factory.enabled;
+        productionButtonText.text = factory.enabled ? "Stop Production" : "Start Production";
+        productionButtonText.color = factory.enabled ? Color.red : Color.green;
+    }
+    private void GameOverCheck()
+    {
+        if (GameOverCondition)
+        {
+            if (gameOverCo != null)
+                return;
+            gameOverCo = StartCoroutine(GameOverCo());
+        }
+        else
+        {
+            if (gameOverCo == null)
+                return;
+            StopCoroutine(gameOverCo);
+            gameOverCo = null;
+        }
+    }
+
+    private IEnumerator GameOverCo()
+    {
+        yield return new WaitForSeconds(TIME_TO_GAMEOVER);
+        Debug.Log("GameOver!");
     }
 
 }
