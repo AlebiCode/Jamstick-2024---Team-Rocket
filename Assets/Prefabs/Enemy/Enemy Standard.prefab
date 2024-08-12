@@ -1556,7 +1556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aimAtMePoint: {fileID: 473294247007790534}
-  hp: 10
+  hp: 5
   weaponSocket: {fileID: 3640253063240456024}
   myHitCollider: {fileID: 935168050833246164}
   ragdollUser: {fileID: 5721574682833100661}

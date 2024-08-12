@@ -6,6 +6,7 @@ public class DayAndNight : MonoBehaviour
 {
     [SerializeField] private Light mainLight;
     [SerializeField] private float speed = 5;
+    [SerializeField] private float nightTimeSpeedMult = 3;
     [SerializeField] private float minTemp = 2000;
     [SerializeField] private float maxTemp = 4000;
 
@@ -22,7 +23,7 @@ public class DayAndNight : MonoBehaviour
         }
         else
         {
-            delta = speed * 2 * Time.deltaTime;
+            delta = speed * nightTimeSpeedMult * Time.deltaTime;
             mainLight.colorTemperature = minTemp;
         }
         transform.Rotate(Vector3.right, -delta);

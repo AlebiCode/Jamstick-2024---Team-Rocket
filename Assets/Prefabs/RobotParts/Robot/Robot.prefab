@@ -44,5 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5413e1f94543ab14cb4c635a0fed207c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 10
+  aimAtMePoint: {fileID: 0}
+  hp: 5
   terrainAdvancement: 0

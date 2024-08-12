@@ -5,12 +5,12 @@ using UnityEngine.Events;
 
 public class EnemyBase : MonoBehaviour
 {
-    [SerializeField] private float minZPosition = -3;
-    [SerializeField] private float maxZPosition = 3;
+    private const float offsetZ = 3;
 
     //private List<Terrain> myTerrainsRange;
     [SerializeField] private List<Enemy> enemies = new List<Enemy>();
     private Terrain myTerrain;
+
 
     public bool HasEnemies => enemies.Count > 0;
 
@@ -24,10 +24,11 @@ public class EnemyBase : MonoBehaviour
 
     private void SpawnEnemies(Enemy enemyPrefab, int quantity)
     {
+        float minZPos = -(quantity - 1) * offsetZ / 2;
         for (int i = 0; i < quantity; i++)
         {
             var enemy = Instantiate(enemyPrefab, GameManager.TerrainGenerator.EnemyBaseGenerator.EnemyDudeParent);
-            enemy.transform.position = transform.position + new Vector3(0, 0, minZPosition + (i * ((maxZPosition - minZPosition) / (quantity - 1))));
+            enemy.transform.position = transform.position + new Vector3(0, 0, minZPos + offsetZ * i);
             enemy.Initialize();
             enemy.OnDeath.AddListener(() => RemoveEnemy(enemy));
             enemies.Add(enemy);
