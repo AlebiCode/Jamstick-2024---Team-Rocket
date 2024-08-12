@@ -20,9 +20,9 @@ public class GameManager : MonoBehaviour
     public const float LOW_DAMAGE_MULT = 0.5f;
 
     private const float BASE_BOT_SPEED = 1f;
-    public const float HIGH_BOT_SPEED = BASE_BOT_SPEED * 1.33f;
+    public const float HIGH_BOT_SPEED = BASE_BOT_SPEED * 2f;
     public const float MID_BOT_SPEED = BASE_BOT_SPEED * 1f;
-    public const float LOW_BOT_SPEED = BASE_BOT_SPEED * 0.67f;
+    public const float LOW_BOT_SPEED = BASE_BOT_SPEED * 0.5f;
 
     public const float BOT_DEATH_FORCE = 10f;
     public const float TIME_TO_GAMEOVER = 5f;
@@ -33,9 +33,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Factory factory;
     [SerializeField] private TerrainGenerator terrainGenerator;
     [SerializeField] private PoolsManager poolsManager;
-    [SerializeField] private int money = 1000;
     [SerializeField] private TMP_Text moneyText;
-    [SerializeField] private TMP_Text productionButtonText;
+    [SerializeField] private int money = 1000;
     [SerializeField] private UnityEvent<int> onMoneyChange;
 
     public List<Robot> aliveRobots = new List<Robot>();
@@ -154,17 +153,15 @@ public class GameManager : MonoBehaviour
                 {
                     default:
                     case DefencesKeys.ARMOR: return HIGH_DAMAGE_MULT;
-                    case DefencesKeys.FOAM: return HIGH_DAMAGE_MULT;
-                    case DefencesKeys.SHIELDS: return HIGH_DAMAGE_MULT;
+                    case DefencesKeys.FOAM: return MID_DAMAGE_MULT;
+                    case DefencesKeys.SHIELDS: return LOW_DAMAGE_MULT;
                 }
         }
     }
 
     public void SetProductionState()
     {
-        factory.enabled = !factory.enabled;
-        productionButtonText.text = factory.enabled ? "Stop Production" : "Start Production";
-        productionButtonText.color = factory.enabled ? Color.red : Color.green;
+        factory.ToggleActivation();
     }
     private void GameOverCheck()
     {

@@ -1,8 +1,11 @@
+using FMOD;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class Factory : MonoBehaviour
 {
@@ -12,6 +15,8 @@ public class Factory : MonoBehaviour
     [SerializeField] private int spawnNumber;
     [SerializeField] private float spawnCoolDown;
     [SerializeField] private Loadout loadout = new Loadout();
+
+    [SerializeField] private TMP_Text productionButtonText;
 
     private float zOffset = 3;
 
@@ -72,6 +77,16 @@ public class Factory : MonoBehaviour
         }
     }
 
+    public void ToggleActivation()
+    {
+        SetActivation(!enabled);
+    }
+    public void SetActivation(bool value)
+    {
+        enabled = value;
+        productionButtonText.text = value ? "Stop Production" : "Start Production";
+        productionButtonText.color = value ? Color.red : Color.green;
+    }
     public void SetAttack(int keyIndex)
     {
         loadout.SetAttack(keyIndex);

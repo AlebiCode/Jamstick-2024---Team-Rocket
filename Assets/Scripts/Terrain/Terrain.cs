@@ -41,6 +41,10 @@ public class Terrain : MonoBehaviour
         robots.Remove(robot);
     }
 
+    public void RemoveEnemyBase()
+    {
+        enemyBase = null;
+    }
 
     public Robot GetFurthestRobot()
     {

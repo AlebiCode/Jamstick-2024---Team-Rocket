@@ -5,7 +5,8 @@ using UnityEngine.Events;
 
 public class EnemyBase : MonoBehaviour
 {
-    private const float offsetZ = 3;
+    private const float Z_OFFSET = 3;
+    private const float X_SPAWN_RANDOMNESS = 0.1f;
 
     //private List<Terrain> myTerrainsRange;
     [SerializeField] private List<Enemy> enemies = new List<Enemy>();
@@ -13,6 +14,8 @@ public class EnemyBase : MonoBehaviour
 
 
     public bool HasEnemies => enemies.Count > 0;
+    public Terrain MyTerrain => myTerrain;
+
 
     private Coroutine waitForTargeting;
 
@@ -24,19 +27,24 @@ public class EnemyBase : MonoBehaviour
 
     private void SpawnEnemies(Enemy enemyPrefab, int quantity)
     {
-        float minZPos = -(quantity - 1) * offsetZ / 2;
+        float minZPos = -(quantity - 1) * Z_OFFSET / 2;
         for (int i = 0; i < quantity; i++)
         {
             var enemy = Instantiate(enemyPrefab, GameManager.TerrainGenerator.EnemyBaseGenerator.EnemyDudeParent);
-            enemy.transform.position = transform.position + new Vector3(0, 0, minZPos + offsetZ * i);
+            enemy.transform.position = transform.position + new Vector3(Random.Range(-X_SPAWN_RANDOMNESS, X_SPAWN_RANDOMNESS), 0, minZPos + Z_OFFSET * i);
             enemy.Initialize();
-            enemy.OnDeath.AddListener(() => RemoveEnemy(enemy));
+            enemy.OnDeath.AddListener(() => OnEnemyDeath(enemy));
             enemies.Add(enemy);
         }
     }
-    private void RemoveEnemy(Enemy enemy)
+    private void OnEnemyDeath(Enemy enemy)
     {
         enemies.Remove(enemy);
+        if (enemies.Count == 0)
+        {
+            myTerrain.RemoveEnemyBase();
+            GameManager.TerrainGenerator.EnemyBaseGenerator.OnBaseDefeated(this);
+        }
     }
 
     public void OnBotEnteredMyRange(Robot robot)

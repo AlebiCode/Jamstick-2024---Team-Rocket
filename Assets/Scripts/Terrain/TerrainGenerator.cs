@@ -149,6 +149,21 @@ public class TerrainGenerator
         return activeTerrains.GetRange(GetTerrainIDAtX(xPos), count);
     }
 
+    public EnemyBase FindFirstEnemyBase()
+    {
+        var t = FindFirstEnemyBaseTerrain();
+        return t == null ? null : t.EnemyBase;
+    }
+    public Terrain FindFirstEnemyBaseTerrain()
+    {
+        for (int i = 0; i < activeTerrains.Count; i++)
+        {
+            if (activeTerrains[i].HasEnemyBase)
+                return activeTerrains[i];
+        }
+        return null;
+    }
+
 }
 
 /*
