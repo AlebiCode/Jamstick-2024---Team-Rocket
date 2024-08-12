@@ -104,6 +104,7 @@ public class Factory : MonoBehaviour
 
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(Factory))]
 [CanEditMultipleObjects]
 public class Factory_Editor : Editor
@@ -126,3 +127,4 @@ public class Factory_Editor : Editor
     }
 
 }
+#endif

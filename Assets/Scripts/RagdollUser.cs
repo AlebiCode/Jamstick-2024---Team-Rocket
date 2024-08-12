@@ -26,7 +26,7 @@ public class RagdollUser : MonoBehaviour
 
 }
 
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(RagdollUser))]
 [CanEditMultipleObjects]
 public class RagdollUser_Editor : Editor
@@ -82,3 +82,4 @@ public class RagdollUser_Editor : Editor
     }
 
 }
+#endif
